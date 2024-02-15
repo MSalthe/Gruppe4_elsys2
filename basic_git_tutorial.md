@@ -1,4 +1,3 @@
-# Først - setup
 Der det er lagt til paranteser, for eksempel (navn på ny branch), skal navnet ikke ha parantesene rundt seg.
 
 ## Klone repository
