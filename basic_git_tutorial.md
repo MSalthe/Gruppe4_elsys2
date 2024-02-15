@@ -3,6 +3,7 @@
 Åpne terminalen i mappa du vil ha repositoriet i.
 Skriv inn:
 > git clone https://github.com/MSalthe/web_gruppe4_elsys2.git
+
 Dette vil generere en git-mappe på datamaskinen din og lage en lokal kopi av det som er lastet opp her.
 
 ## Lag en ny branch
@@ -17,6 +18,7 @@ Når du så har gjort endringer på den lokale branchen, kan du laste opp branch
 ### Commit 
 Når du har endret en fil, lagt en til, fjernet den etc. og vil "commit"-e til endringene gjør du følgende:
 > git commit -a -m "Din melding her"
+
 Dette oppretter en "commit" (som man kan for eksempel kan spole tilbake til senere), legger til alle endringer som har blitt gjort siden sist commit, og legger ved en melding. Meldingen burde beskrive hva som har blitt gjort siden sist commit!
 
 ### Push
@@ -25,6 +27,7 @@ Når du vil at innholdet på GitHub skal reflektere de endringene du har gjort l
 #### Første gang til ny branch
 Første gang du pusher til en ny branch, må du opprette den på Github. Da gjør du følgende:
 > git push -u origin branch
+
 Da setter du din lokale branch til å "snakke med" en upstream branch (-u) som heter branch. Du kan kalle branchen hva du vil, men navnet må være unikt fra andre branches.
 
 #### Til vanlig
