@@ -9,4 +9,4 @@ Eksempel på bruk av Flask i Python.
 HTML-sider må inn her for å kunne "hostes" av Flask.
 
 # templates/frontend.html
-    Eksempel på bruk av fetch i JS til å sende tekst via HTTP.
+Eksempel på bruk av fetch i JS til å sende tekst via HTTP.
