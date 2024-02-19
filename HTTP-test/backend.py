@@ -17,6 +17,5 @@ def handle_text():
     print(text_data)  # Print the received text to the console
     return 'Text received', 200  # Respond to the client that the text was received
 
-
 if __name__ == '__main__':
     app.run(debug=True)
