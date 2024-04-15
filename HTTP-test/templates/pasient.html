@@ -42,34 +42,11 @@
             <div id="knapp7" class="tabcontent" class="grid-item"><button id="startstyle" onclick="startGiveState(7)"> Start </button></div>
         </div>
         <div class="grid-item-two">
-            <div style="background-color: red;">
+            <div style="background-color: #54acec;">
                 <div id="vann1" class="tabcontent" class="grid-item">
-                    <script>
-    
-                        function makeHttpRequest() {
-                            fetch('/get_random_tilt')
-                                .then(response => response.json())
-                                .then(data => {
-                                    tiltGlass(data);
-                                })
-                                .catch(error => {
-                                    console.error('Error during HTTP request:', error);
-                                });
-                        }
-
-                        function tiltGlass(data) {
-                            const glass = document.getElementById('glass');
-                            if (!glass) return; // Guard clause in case 'glass' element does not exist
-                            
-                            const tiltAngle = data.tilt;
-                            glass.style.transform = `translate(-50%, -50%) rotate(${tiltAngle}deg)`;
-                        }
-
-                        // Initialize the glass tilt update process
-                        setInterval(makeHttpRequest, 2000);  // Adjust the interval as needed
-                    </script>
-
-                    </script>
+                    <h3>Vannglass</h3>
+                    <iframe src="glass.html" frameborder="0" width="100%" height="400"></iframe>
+                    
                 </div>
                 <div id="vann2" class="tabcontent" class="grid-item">
                     <h3>Vannglass pasient 2</h3>
