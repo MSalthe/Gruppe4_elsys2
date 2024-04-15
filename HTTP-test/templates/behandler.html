@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/css/behandler.css"/>
+    <script type="text/javascript" src="../static/js/tabs.js"></script>
+</head>
+
+<body>
+
+    <div class="header">
+        <div style="display: flex; flex-wrap: wrap;">
+            <div id="bildevenstre" style="flex: 0 0 50%;">
+            <a href="forside.html" target="_self"><img src="../static/images/logotre.jpg" alt="image" height="110px" width="(110*3.58)px"></a>
+            </div>
+            
+            <div id= "bildehøyre" style="flex: 0 0 50%;">
+            <img src="../static/images/tannhjulblaa.jpg" alt="image" height="90px" width="90px">
+            </div> 
+        </div>
+    </div>
+
+    <div class="grid-container">
+        <div class="grid-item">
+            <div class="btn-group" class="tabcontent" class="grid-item">
+                <div class="btn-group" class="tabcontent" class="grid-item">
+                    <button class="tablinks" onclick="patientSelectedWrapper(event, 'graf1','siste_resultat1', 'gjennomsnitt1', 'hoyeste-score1', 'nest_siste1', 1);">Pasient 1</button>
+                    <button class="tablinks" onclick="patientSelectedWrapper(event, 'graf2','siste_resultat2', 'gjennomsnitt2', 'hoyeste-score2', 'nest_siste2', 2);">Pasient 2</button>
+                    <button class="tablinks" onclick="patientSelectedWrapper(event, 'graf3','siste_resultat3', 'gjennomsnitt3', 'hoyeste-score3', 'nest_siste3', 3);">Pasient 3</button>
+                    <button class="tablinks" onclick="patientSelectedWrapper(event, 'graf4','siste_resultat4', 'gjennomsnitt4', 'hoyeste-score4', 'nest_siste4', 4);">Pasient 4</button>
+                    <button class="tablinks" onclick="patientSelectedWrapper(event, 'graf5','siste_resultat5', 'gjennomsnitt5', 'hoyeste-score5', 'nest_siste5', 5);">Pasient 5</button>
+                    <button class="tablinks" onclick="patientSelectedWrapper(event, 'graf6','siste_resultat6', 'gjennomsnitt6', 'hoyeste-score6', 'nest_siste6', 6);">Pasient 6</button>
+                    <button class="tablinks" onclick="patientSelectedWrapper(event, 'graf1','siste_resultat7', 'gjennomsnitt7', 'hoyeste-score7', 'nest_siste7', 7);">Pasient 7</button>
+                </div>
+            </div>
+        </div>
+        <div class="grid-item">
+            <div class="grid-item-two"> 
+                <div class="graf" style="background-color: red;">
+                    <div id="graf1" class="tabcontent" class="grid-item">
+                        <h3>Grafen til pasient 1</h3>
+                    </div>
+                    <div id="graf2" class="tabcontent" class="grid-item">
+                        <h3>Grafen til pasient 2</h3>
+                    </div>
+                    <div id="graf3" class="tabcontent" class="grid-item">
+                        <h3>Grafen til pasient 3</h3>
+                    </div>
+                    <div id="graf4" class="tabcontent" class="grid-item">
+                        <h3>Grafen til pasient 4</h3>
+                    </div>
+                    <div id="graf5" class="tabcontent" class="grid-item">
+                        <h3>Grafen til pasient 5</h3>
+                    </div>
+                    <div id="graf6" class="tabcontent" class="grid-item">
+                        <h3>Grafen til pasient 6</h3>
+                    </div>
+                    <div id="graf7" class="tabcontent" class="grid-item">
+                        <h3>Grafen til pasient 7</h3>
+                    </div>
+                </div>
+                <div class="siste_resultat">
+                    <div id="siste_resultat1" class="tabcontent grid-item tekst">
+                        <h2>14.04.2024:</h2>
+                        <div class="box_uten grid-item-four">
+                            <div class="tilt">
+                                <h3 class="tekst">Tilt:</h3>
+                                <h3>76</h3>
+                            </div>
+                            <div class="tid">
+                                <h3 class="tekst">Tid:</h3>
+                                <h3>00:00</h3>
+                            </div>
+                            <div class="aksel">
+                                <h3 class="tekst">Akselerasjon:</h3>
+                                <h3>50</h3>
+                            </div>
+                            <div class="score">
+                                <h3 class="tekst">Score:</h3>
+                                <h3>222</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="siste_resultat2" class="tabcontent grid-item tekst">
+                        <h2>14.04.2024:</h2>
+                        <div class="box_uten grid-item-four">
+                            <div class="tilt">
+                                <h3 class="tekst">Tilt:</h3>
+                                <h3>76</h3>
+                            </div>
+                            <div class="tid">
+                                <h3 class="tekst">Tid:</h3>
+                                <h3>00:00</h3>
+                            </div>
+                            <div class="aksel">
+                                <h3 class="tekst">Akselerasjon:</h3>
+                                <h3>50</h3>
+                            </div>
+                            <div class="score">
+                                <h3 class="tekst">Score:</h3>
+                                <h3>222</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="siste_resultat3" class="tabcontent grid-item tekst">
+                        <h2>14.04.2024:</h2>
+                        <div class="box_uten grid-item-four">
+                            <div class="tilt">
+                                <h3 class="tekst">Tilt:</h3>
+                                <h3>76</h3>
+                            </div>
+                            <div class="tid">
+                                <h3 class="tekst">Tid:</h3>
+                                <h3>00:00</h3>
+                            </div>
+                            <div class="aksel">
+                                <h3 class="tekst">Akselerasjon:</h3>
+                                <h3>50</h3>
+                            </div>
+                            <div class="score">
+                                <h3 class="tekst">Score:</h3>
+                                <h3>222</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="siste_resultat4" class="tabcontent grid-item tekst">
+                        <h2>14.04.2024:</h2>
+                        <div class="box_uten grid-item-four">
+                            <div class="tilt">
+                                <h3 class="tekst">Tilt:</h3>
+                                <h3>76</h3>
+                            </div>
+                            <div class="tid">
+                                <h3 class="tekst">Tid:</h3>
+                                <h3>00:00</h3>
+                            </div>
+                            <div class="aksel">
+                                <h3 class="tekst">Akselerasjon:</h3>
+                                <h3>50</h3>
+                            </div>
+                            <div class="score">
+                                <h3 class="tekst">Score:</h3>
+                                <h3>222</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="siste_resultat5" class="tabcontent grid-item tekst">
+                        <h2>14.04.2024:</h2>
+                        <div class="box_uten grid-item-four">
+                            <div class="tilt">
+                                <h3 class="tekst">Tilt:</h3>
+                                <h3>76</h3>
+                            </div>
+                            <div class="tid">
+                                <h3 class="tekst">Tid:</h3>
+                                <h3>00:00</h3>
+                            </div>
+                            <div class="aksel">
+                                <h3 class="tekst">Akselerasjon:</h3>
+                                <h3>50</h3>
+                            </div>
+                            <div class="score">
+                                <h3 class="tekst">Score:</h3>
+                                <h3>222</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="siste_resultat6" class="tabcontent grid-item tekst">
+                        <h2>14.04.2024:</h2>
+                        <div class="box_uten grid-item-four">
+                            <div class="tilt">
+                                <h3 class="tekst">Tilt:</h3>
+                                <h3>76</h3>
+                            </div>
+                            <div class="tid">
+                                <h3 class="tekst">Tid:</h3>
+                                <h3>00:00</h3>
+                            </div>
+                            <div class="aksel">
+                                <h3 class="tekst">Akselerasjon:</h3>
+                                <h3>50</h3>
+                            </div>
+                            <div class="score">
+                                <h3 class="tekst">Score:</h3>
+                                <h3>222</h3>
+                                <!-- -->
+                            </div>
+                        </div>
+                    </div>
+                    <div id="siste_resultat7" class="tabcontent grid-item tekst">
+                        <h2>14.04.2024:</h2>
+                        <div class="box_uten grid-item-four">
+                            <div class="tilt">
+                                <h3 class="tekst">Tilt:</h3>
+                                <h3>76</h3>
+                            </div>
+                            <div class="tid">
+                                <h3 class="tekst">Tid:</h3>
+                                <h3>00:00</h3>
+                            </div>
+                            <div class="aksel">
+                                <h3 class="tekst">Akselerasjon:</h3>
+                                <h3>50</h3>
+                            </div>
+                            <div class="score">
+                                <h3 class="tekst">Score:</h3>
+                                <h3>222</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-item-three" class="gjennomsnitt">
+                    <div id="gjennomsnitt1" class="tabcontent grid-item tekst">
+                        <h2>Gjennomsnitt:</h2>
+                        <div class="box">
+                            <h3>245</h3>
+                        </div>
+                    </div>
+                    <div id="gjennomsnitt2" class="tabcontent grid-item tekst">
+                        <h2>Gjennomsnitt:</h2>
+                        <div class="box">
+                            <h3>245</h3>
+                        </div>
+                    </div>
+                    <div id="gjennomsnitt3" class="tabcontent grid-item tekst">
+                        <h2>Gjennomsnitt:</h2>
+                        <div class="box">
+                            <h3>245</h3>
+                        </div>
+                    </div>
+                    <div id="gjennomsnitt4" class="tabcontent grid-item tekst">
+                        <h2>Gjennomsnitt:</h2>
+                        <div class="box">
+                            <h3>245</h3>
+                        </div>
+                    </div>
+                    <div id="gjennomsnitt5" class="tabcontent grid-item tekst">
+                        <h2>Gjennomsnitt:</h2>
+                        <div class="box">
+                            <h3>245</h3>
+                        </div>
+                    </div>
+                    <div id="gjennomsnitt6" class="tabcontent grid-item tekst">
+                        <h2>Gjennomsnitt:</h2>
+                        <div class="box">
+                            <h3>245</h3>
+                        </div>
+                    </div>
+                    <div id="gjennomsnitt7" class="tabcontent grid-item tekst">
+                        <h2>Gjennomsnitt:</h2>
+                        <div class="box">
+                            <h3>245</h3>
+                        </div>
+                    </div>
+
+                    <div id="hoyeste-score1" class="tabcontent grid-item tekst">
+                        <h2>Høyeste score:</h2>
+                        <div class="box">
+                            <h3>310</h3>
+                        </div>
+                    </div> 
+                    <div id="hoyeste-score2" class="tabcontent grid-item tekst">
+                        <h2>Høyeste score:</h2>
+                        <div class="box">
+                            <h3>310</h3>
+                        </div>
+                    </div> 
+                    <div id="hoyeste-score3" class="tabcontent grid-item tekst">
+                        <h2>Høyeste score:</h2>
+                        <div class="box">
+                            <h3>310</h3>
+                        </div>
+                    </div> 
+                    <div id="hoyeste-score4" class="tabcontent grid-item tekst">
+                        <h2>Høyeste score:</h2>
+                        <div class="box">
+                            <h3>310</h3>
+                        </div>
+                    </div> 
+                    <div id="hoyeste-score5" class="tabcontent grid-item tekst">
+                        <h2>Høyeste score:</h2>
+                        <div class="box">
+                            <h3>310</h3>
+                        </div>
+                    </div> 
+                    <div id="hoyeste-score6" class="tabcontent grid-item tekst">
+                        <h2>Høyeste score:</h2>
+                        <div class="box">
+                            <h3>310</h3>
+                        </div>
+                    </div> 
+                    <div id="hoyeste-score7" class="tabcontent grid-item tekst">
+                        <h2>Høyeste score:</h2>
+                        <div class="box">
+                            <h3>310</h3>
+                        </div>
+                    </div>  
+                </div> 
+                <div class="nest_siste_resultat">
+                    <div id="nest_siste1" class="tabcontent grid-item tekst">
+                        <h2>10.04.2024:</h2>
+                        <div class="box_uten grid-item-four">
+                            <div class="tilt">
+                                <h3 class="tekst">Tilt:</h3>
+                                <h3>76</h3>
+                            </div>
+                            <div class="tid">
+                                <h3 class="tekst">Tid:</h3>
+                                <h3>00:00</h3>
+                            </div>
+                            <div class="aksel">
+                                <h3 class="tekst">Akselerasjon:</h3>
+                                <h3>50</h3>
+                            </div>
+                            <div class="score">
+                                <h3 class="tekst">Score:</h3>
+                                <h3>222</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="nest_siste2" class="tabcontent grid-item tekst">
+                        <h2>10.04.2024:</h2>
+                        <div class="box_uten grid-item-four">
+                            <div class="tilt">
+                                <h3 class="tekst">Tilt:</h3>
+                                <h3>76</h3>
+                            </div>
+                            <div class="tid">
+                                <h3 class="tekst">Tid:</h3>
+                                <h3>00:00</h3>
+                            </div>
+                            <div class="aksel">
+                                <h3 class="tekst">Akselerasjon:</h3>
+                                <h3>50</h3>
+                            </div>
+                            <div class="score">
+                                <h3 class="tekst">Score:</h3>
+                                <h3>222</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="nest_siste3" class="tabcontent grid-item tekst">
+                        <h2>10.04.2024:</h2>
+                        <div class="box_uten grid-item-four">
+                            <div class="tilt">
+                                <h3 class="tekst">Tilt:</h3>
+                                <h3>76</h3>
+                            </div>
+                            <div class="tid">
+                                <h3 class="tekst">Tid:</h3>
+                                <h3>00:00</h3>
+                            </div>
+                            <div class="aksel">
+                                <h3 class="tekst">Akselerasjon:</h3>
+                                <h3>50</h3>
+                            </div>
+                            <div class="score">
+                                <h3 class="tekst">Score:</h3>
+                                <h3>222</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="nest_siste4" class="tabcontent grid-item tekst">
+                        <h2>10.04.2024:</h2>
+                        <div class="box_uten grid-item-four">
+                            <div class="tilt">
+                                <h3 class="tekst">Tilt:</h3>
+                                <h3>76</h3>
+                            </div>
+                            <div class="tid">
+                                <h3 class="tekst">Tid:</h3>
+                                <h3>00:00</h3>
+                            </div>
+                            <div class="aksel">
+                                <h3 class="tekst">Akselerasjon:</h3>
+                                <h3>50</h3>
+                            </div>
+                            <div class="score">
+                                <h3 class="tekst">Score:</h3>
+                                <h3>222</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="nest_siste5" class="tabcontent grid-item tekst">
+                        <h2>10.04.2024:</h2>
+                        <div class="box_uten grid-item-four">
+                            <div class="tilt">
+                                <h3 class="tekst">Tilt:</h3>
+                                <h3>76</h3>
+                            </div>
+                            <div class="tid">
+                                <h3 class="tekst">Tid:</h3>
+                                <h3>00:00</h3>
+                            </div>
+                            <div class="aksel">
+                                <h3 class="tekst">Akselerasjon:</h3>
+                                <h3>50</h3>
+                            </div>
+                            <div class="score">
+                                <h3 class="tekst">Score:</h3>
+                                <h3>222</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="nest_siste6" class="tabcontent grid-item tekst">
+                        <h2>10.04.2024:</h2>
+                        <div class="box_uten grid-item-four">
+                            <div class="tilt">
+                                <h3 class="tekst">Tilt:</h3>
+                                <h3>76</h3>
+                            </div>
+                            <div class="tid">
+                                <h3 class="tekst">Tid:</h3>
+                                <h3>00:00</h3>
+                            </div>
+                            <div class="aksel">
+                                <h3 class="tekst">Akselerasjon:</h3>
+                                <h3>50</h3>
+                            </div>
+                            <div class="score">
+                                <h3 class="tekst">Score:</h3>
+                                <h3>222</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="nest_siste7" class="tabcontent grid-item tekst">
+                        <h2>10.04.2024:</h2>
+                        <div class="box_uten grid-item-four">
+                            <div class="tilt">
+                                <h3 class="tekst">Tilt:</h3>
+                                <h3>76</h3>
+                            </div>
+                            <div class="tid">
+                                <h3 class="tekst">Tid:</h3>
+                                <h3>00:00</h3>
+                            </div>
+                            <div class="aksel">
+                                <h3 class="tekst">Akselerasjon:</h3>
+                                <h3>50</h3>
+                            </div>
+                            <div class="score">
+                                <h3 class="tekst">Score:</h3>
+                                <h3>222</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+</body>
