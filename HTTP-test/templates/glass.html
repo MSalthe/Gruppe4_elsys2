@@ -10,7 +10,7 @@
         #glass {
             width: 150px;
             height: 200px;
-            background-image: url(/static/images/glass.jpg);
+            background-image: url('static/images/glass.jpg');
             background-size: cover;
             position: absolute;
             top: 50%;
@@ -30,7 +30,7 @@
 
 <button type="update", onClick="makeHttpRequest()">Update</button>
 
-<script src="{{ url_for('static', filename='js/formHandler.js') }}"></script>
+<script src="{{ url_for('static', filename='js/glass.js') }}"></script>
 
 <div id="glass"></div>
 
