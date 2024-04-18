@@ -4,21 +4,29 @@ import json
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return render_template('glass.html')
+@app.route('/forside.html')
+def forside():
+    return render_template('forside.html')
 
-@app.route('/glass')
+@app.route('/glass.html')
 def glass_view():
     return render_template('glass.html')
 
-@app.route('/graf')
+@app.route('/graf.html')
 def graf_view():
     return render_template('graf.html')
 
-@app.route('/pasient')
+@app.route('/pasient.html')
 def pasient():
     return render_template('pasient.html')
+
+@app.route('/behandler.html')
+def behandler():
+    return render_template('behandler.html')
+
+@app.route('/')
+def intro():
+    return render_template('forside.html')
 
 @app.route('/api/hello', methods=['POST'])
 def hello():
