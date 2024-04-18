@@ -6,7 +6,19 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('frontend.html')
+    return render_template('glass.html')
+
+@app.route('/glass')
+def glass_view():
+    return render_template('glass.html')
+
+@app.route('/graf')
+def graf_view():
+    return render_template('graf.html')
+
+@app.route('/pasient')
+def pasient():
+    return render_template('pasient.html')
 
 @app.route('/api/hello', methods=['POST'])
 def hello():

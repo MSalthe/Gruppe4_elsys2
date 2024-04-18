@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Submit Text Example</title>
+    <title>Glass tilt</title>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,7 @@
         #glass {
             width: 150px;
             height: 200px;
-            background-image: url('static/images/glass.jpg');
+            background-image: url('/static/images/glass.jpg');
             background-size: cover;
             position: absolute;
             top: 50%;
@@ -22,23 +22,13 @@
 
 </head>
 <body>
-
-<form id="textForm">
-    <input type="text" id="textField" placeholder="Enter some text" />
-    <button type="submit", onClick="submitButton">Submit</button>
-</form>
-
-<button type="update", onClick="makeHttpRequest()">Update</button>
-
-<script src="{{ url_for('static', filename='js/glass.js') }}"></script>
-
 <div id="glass"></div>
 
     <script>
         // Funksjon for å gjøre HTTP-forespørsel
         function makeHttpRequest() {
             // Gjør en HTTP-forespørsel (f.eks. med fetch API)
-            fetch('http://localhost:5000/api/newbutton')
+            fetch('/api/newbutton')
                 .then(response => response.json())
                 .then(data => {
                     // Modulerer tiltet til glasset basert på dataen mottatt
