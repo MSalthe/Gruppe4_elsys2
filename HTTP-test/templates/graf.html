@@ -10,53 +10,80 @@
     <p id="data"></p>
 
     <script>
-        // Initialize WebSocket connection
-        const ws = new WebSocket('ws://localhost:8080');
+        let dataChart; // Declare this outside to maintain scope across functions
 
-        // Initialize the Chart.js chart
-        const ctx = document.getElementById('dataChart').getContext('2d');
-        const dataChart = new Chart(ctx, {
-            type: 'line', // or 'bar', 'pie', etc.
-            data: {
-                labels: [], // X-axis labels
-                datasets: [{
-                    label: 'Data Value',
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    data: [], // Actual data
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
+        function makeHttpRequest() {
+            fetch('/api/newbutton')
+                .then(response => response.json())
+                .then(data => {
+                    if (dataChart) {
+                        updateGraph(data.number);
+                    } else {
+                        drawGraph(data.number);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during HTTP request:', error);
+                });
+        }
+
+            const ctx = document.getElementById('dataChart').getContext('2d');
+            dataChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Initial'], // Starting label
+                    datasets: [{
+                        label: 'Data Value',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        data: [] // Initialize with the first data point
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Attempts',
+                                font: {
+                                    size: 16
+                                },
+                                color: '#666'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Score',
+                                font: {
+                                    size: 16
+                                },
+                                color: '#666'
+                            },
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 10,
+                                min: 0,
+                                max: 100
+                            }
+                        }
                     }
                 }
-            }
-        });
-
-        ws.onmessage = function(event) {
-            const receivedData = JSON.parse(event.data);
-            console.log('Data received:', receivedData);
-
-            // Assuming 'receivedData' has a structure like { number: randomNumber }
-            const randomNumber = receivedData.number;
-            document.getElementById('data').textContent = `Latest Random Number: ${randomNumber}`;
-
-            // Add data to chart
-            dataChart.data.labels.push(''); // Add a new label (e.g., a timestamp or a simple counter)
-            dataChart.data.datasets.forEach((dataset) => {
-                dataset.data.push(randomNumber); // Add the new data
             });
-            dataChart.update(); // Refresh the chart
-        };
 
-        ws.onerror = function(error) {
-            console.error('WebSocket Error:', error);
-        };
+        function updateGraph(newNumber) {
+            const nextLabel = dataChart.data.labels.length; // Just using index as label for simplicity
+            dataChart.data.labels.push(nextLabel.toString());
+            dataChart.data.datasets.forEach((dataset) => {
+                dataset.data.push(newNumber);
+            });
+            dataChart.update();
+        }
+
+        setInterval(makeHttpRequest, 3000); // Poll every 3 seconds
+        
     </script>
 
-    <!-- Example placeholder for where to display the data -->
     <div id="dataDisplay" style="white-space: pre-wrap;"></div>
     
 </body>
