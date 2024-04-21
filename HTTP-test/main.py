@@ -4,11 +4,25 @@ import random
 import connection_handler as connection_handler_
 from gpiozero import LED, InputDevice, LEDBoard, PWMLED
 from random import randint
+import socket
+
 
 Gameresults = { } #dictionary med steg pasient (dic)- sokkel (dic)- typedata (dic)- liste
-latest_reading = []
 
-async def game_master(connection_handler, pasient):
+
+
+async def game_master(pasient):
+    global client_handler
+    server_ip = "127.0.0.1"
+    port = 8003
+    sockServer = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+    sockServer.bind((server_ip, port))
+
+    sockServer.listen(0)
+    print(f"Listening on {server_ip}:{port}")
+
+    client_socket, client_address = sockServer.accept()
+    print(f"Accepted connection from {client_address[0]}:{client_address[1]}")
 
 
     Gameresults[pasient] = {}
@@ -70,8 +84,8 @@ async def game_master(connection_handler, pasient):
 
 
     while len(sokkel_Id_list) == 0:
-        sokkel_Id_list = await connection_handler.get_IDs()
-        await asyncio.sleep(0)
+        sokkel_Id_list = await client_handler.get_IDs()
+        await asyncio.sleep(2)
     
 
     #Først må kommunikasjon etableres mellom sokkelene og Game master slik at begge er klar over hverandr
@@ -98,10 +112,10 @@ async def game_master(connection_handler, pasient):
         #Game_start = getBackEnd()
         Game_start = int(input("trykk 1 for å starte et game "))
         for sokkel in sokkel_Id_list:
-            if (await connection_handler.get_connected(str(sokkel)) == False):
+            if (await client_handler.get_connected(str(sokkel)) == False):
                 print("Lost communication with sokkel with id " + str(sokkel))
-            await asyncio.sleep(2)
-        sokkel_Id_list = await connection_handler.get_IDs()
+            await asyncio.sleep(0.5)
+        sokkel_Id_list = await client_handler.get_IDs()
             
     #jeg forestiller meg at programmet kjører parallelt med back end og annet, men #har ikke jobbet så mye med det før, antar at sleep ikke egt trengs men ønsker #raspberry setter av tid til at andre programmer skal kunne gjøres. 
 
@@ -115,27 +129,27 @@ async def game_master(connection_handler, pasient):
                 Gameresults[pasient][sokkel] = {}
                 #RandomHull = randint(0, len(Hall_effekt))
                 #Led_lys[RandomHull].on()
-                await connection_handler.send_to_client(str(sokkel), "set_gameplay_state active")
-                await connection_handler.reset_client_data(str(sokkel))
+                await client_handler.send_to_client(str(sokkel), "set_gameplay_state active")
+                await client_handler.reset_client_data(str(sokkel))
                 #while Hall_effekt[RandomHull].value == 0:
                 for i in range(100):
                     for i in range(10): #Looper her fordi jeg er mer interresert i dataen enn de andre sjekkene i loopen.
                         await asyncio.sleep(0.125)
-                        temp_dic = await connection_handler.get_last_reading(str(sokkel))
+                        temp_dic = await client_handler.get_last_reading(str(sokkel))
                         Akselerasjon.append([temp_dic["accel_x"], temp_dic["accel_y"], temp_dic["accel_z"]])
                         Gyro.append([temp_dic["gyro_x"], temp_dic["gyro_y"], temp_dic["gyro_z"]])
                         Time.append(temp_dic["timestamp"])
                         print("Gamemaster Tilt: ", Gyro, "   Akselerasjon: ", Akselerasjon, "   Time: ", Time)
-                    
+                        #send data to backend
                     #Game_start = getBackEnd()
                     if Game_start == 0:
                         print("Game cancelled")
                         break
-                    if (await connection_handler.get_connected(str(sokkel)) == False):
+                    if (await client_handler.get_connected(str(sokkel)) == False):
                         print("lost sokkel connection")
                 #Led_lys[RandomHull].off()
                 
-                Gameresults[pasient][sokkel].append(connection_handler.collectFullData(str(sokkel)))
+                Gameresults[pasient][sokkel].append(client_handler.collectFullData(str(sokkel)))
                 print("collected data from sokkel run")
                 if Game_start == 0:
                     break
@@ -148,6 +162,7 @@ async def game_master(connection_handler, pasient):
             #kanskje Game_start skal være lik 2 slik at backend får en oppgavekode
 
     return 0
+
 
 
 # Replace hostname and port if needed
@@ -166,9 +181,10 @@ async def corutine1():
         await server.serve_forever()
 
 async def corutine2():
-    global client_handler
-    Gamemaster = await game_master(client_handler, "pasient1")
+    Gamemaster = await game_master()
     print("starting gamemaster")
+
+
 
 
 async def main():
@@ -187,7 +203,7 @@ async def main():
     # Run it as an asyncio task so that it runs concurrently with the client handler.
     # Remember to pass the client_handler object to the Game Master program as a parameter. 
     # This way you can access the public methods like send_to_client from the Game Master program.
-    #
+    
     await asyncio.gather(corutine1(), corutine2())
     
 
