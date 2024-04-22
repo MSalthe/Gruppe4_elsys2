@@ -10,6 +10,241 @@ import socket
 Gameresults = { } #dictionary med steg pasient (dic)- sokkel (dic)- typedata (dic)- liste
 
 
+async def getGamestate(socketServer, preGamestart):
+    #henter data fra backend
+    #formater data riktig
+    #hvis data ikke blir hentet return 
+    address = ('127.0.0.1', 8004)
+    message = "b"
+    # Receive the client packet along with the address it is coming from
+    try: 
+        message, address = socketServer.recvfrom(1024)
+        message = message.decode("utf-8")
+        # Capitalize the message from the client
+        message = message.lower()
+    except:
+        print("Did not recieve Game_start update")
+    finally:
+
+        try:
+            Game_start, pasient = message.split(' ', 1)
+        except:
+            Game_start = preGamestart
+            pasient = "errorpatient"
+
+        #format: message = "1 pasient 1"
+        #eller: message = "0 whaterver (denne dataen brukes ikke)"
+        return Game_start, pasient
+
+async def waitForGamestart(socketServer, sokkel_Id_list):
+    global client_handler
+    Game_start = 0
+    #En status hvor den har initiert og venter på å starte spillet
+    pasient = ""
+    #Game_start, pasient = await getGamestate(socketServer, Game_start)
+    Game_start = int(input("trykk 1 for å starte et game "))
+    for sokkel in sokkel_Id_list:
+        if (await client_handler.get_connected(str(sokkel)) == False):
+            print("Lost communication with sokkel with id " + str(sokkel))
+        await asyncio.sleep(0.5)
+    sokkel_Id_list = await client_handler.get_IDs()
+    return Game_start, pasient
+
+
+
+
+async def sendLastReading(socketServer, temp_dic):
+
+    address = ('127.0.0.1', 8003)
+    Reading = str(temp_dic["gyro_x"]) + " " + str(temp_dic["gyro_y"]) + " " + str(temp_dic["gyro_z"]) + " " + str(temp_dic["accel_x"]) + " " + str(temp_dic["accel_y"]) + " " + str(temp_dic["accel_z"]) + " " + str(temp_dic["timestamp"])
+    Reading = str.encode(Reading) #codek register encoding
+    socketServer.sendto(Reading, address) 
+
+
+async def saveGame(socketServer):
+    global Gameresults
+
+    #åpner fil og json dumper i filen
+
+
+    #sender game ended
+    address = ('127.0.0.1', 8004)
+    socketServer.bind(address)
+    Reading = "Game_start 0"
+    
+    socketServer.sendto(Reading, address) 
+    socketServer.close()
+    #filbehandlingsshit
+
+async def Gameloop(socketReciveServer, socketSendServer, sokkel_Id_list, Game_start1, pasient, Hall_effekt=[0,0], Led_lys=[0,0]):
+    global client_handler
+    global Gameresults
+
+    Gameresults[pasient] = {}
+    Score = 0
+    Game_start = Game_start1
+
+    Data = list()
+    Gyro = list(list())
+    Akselerasjon = list(list())
+    time = 0
+    Time = list()
+
+    RandomHull = 0
+    RandomHull_list = list()
+
+    for sokkel in sokkel_Id_list:
+
+
+        Gameresults[pasient][sokkel] = {}
+        RandomHull = randint(0, len(Hall_effekt))
+        #Led_lys[RandomHull].on()
+        await client_handler.send_to_client(str(sokkel), "set_gameplay_state active")
+        await client_handler.reset_client_data(str(sokkel))
+
+
+        #while Hall_effekt[RandomHull].value == 0:
+        for i in range(10): #kjører denne siden vi ikke er i raspberry pi.
+            for i in range(15): #Looper her fordi jeg er mer interresert i dataen enn de andre sjekkene i loopen.
+                await asyncio.sleep(0.125) #en arbitrary sleep som skal tillate serveren å ta inn data. 
+                temp_dic = await client_handler.get_last_reading(str(sokkel))
+                await sendLastReading(socketSendServer, temp_dic)
+                Akselerasjon.append([temp_dic["accel_x"], temp_dic["accel_y"], temp_dic["accel_z"]])
+                Gyro.append([temp_dic["gyro_x"], temp_dic["gyro_y"], temp_dic["gyro_z"]])
+                Time.append(temp_dic["timestamp"])
+                print("Gamemaster Tilt: ", Gyro, "   Akselerasjon: ", Akselerasjon, "   Time: ", Time)
+
+            Game_start, ikkeBrukPasient = await getGamestate(socketReciveServer, Game_start)
+            if Game_start == 0:
+                print("Game cancelled")
+                readings = await client_handler.get_all_readings(str(sokkel))
+                Gameresults[pasient][sokkel]["timestamp"] = readings["timestamp"]
+                Gameresults[pasient][sokkel]["accel_x"] = readings["accel_x"]
+                Gameresults[pasient][sokkel]["accel_y"] = readings["accel_y"]
+                Gameresults[pasient][sokkel]["accel_z"] = readings["accel_z"]
+                Gameresults[pasient][sokkel]["gyro_x"] = readings["gyro_x"]
+                Gameresults[pasient][sokkel]["gyro_y"] = readings["gyro_y"]
+                Gameresults[pasient][sokkel]["gyro_z"] = readings["gyro_z"]
+                print("collected data from sokkel run")
+                return 0
+            if (await client_handler.get_connected(str(sokkel)) == False):
+                print("lost sokkel connection")
+        #Led_lys[RandomHull].off()
+        readings = await client_handler.get_all_readings(str(sokkel))
+        Gameresults[pasient][sokkel]["timestamp"] = readings["timestamp"]
+        Gameresults[pasient][sokkel]["accel_x"] = readings["accel_x"]
+        Gameresults[pasient][sokkel]["accel_y"] = readings["accel_y"]
+        Gameresults[pasient][sokkel]["accel_z"] = readings["accel_z"]
+        Gameresults[pasient][sokkel]["gyro_x"] = readings["gyro_x"]
+        Gameresults[pasient][sokkel]["gyro_y"] = readings["gyro_y"]
+        Gameresults[pasient][sokkel]["gyro_z"] = readings["gyro_z"]
+        print("collected data from sokkel run")
+
+    #sendToBackend("Game finished", Gameresults)
+    Game_start = 0
+
+    #kanskje Game_start skal være lik 2 slik at backend får en oppgavekode
+    await client_handler.send_to_client(str(sokkel), "set_gameplay_state idle")
+    return 0
+
+async def GameMaster2():
+
+
+    server_ip = "127.0.0.1"
+    port = 8003
+
+    socketSendServer = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    socketSendServer.settimeout(1)
+    address = ('127.0.0.1', 8003)
+    socketSendServer.bind(address)
+
+    socketReciveServer = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    socketReciveServer.settimeout(1)
+    address = ('127.0.0.1', 8004)
+    socketReciveServer.bind(address)  
+    socketReciveServer.settimeout(1)
+
+
+    print("started gamemaster")
+
+
+    #Initialiser Hall_effekt
+    '''
+    HE1 = InputDevice(4)
+    HE2 = InputDevice(17)
+    HE3 = InputDevice(18)
+    HE4 = InputDevice(27)
+    HE5 = InputDevice(22)
+    HE6 = InputDevice(23)
+    HE7 = InputDevice(24)
+    HE8 = InputDevice(25)
+    HE9 = InputDevice(5)
+    HE10 = InputDevice(6)
+    HE11= InputDevice(12)
+    HE12 = InputDevice(13)
+
+
+
+    #liste over alle initialiserte hall effekt
+    Hall_effekt = [HE1, HE2, HE3, HE4, HE5, HE6, HE7, HE8, HE9, HE10, HE11, HE12]
+
+
+    #Initialiser LED
+    
+    LED1 = LED(1)
+    LED2 = LED(2)
+    LED3 = LED(1)
+    LED4 = LED(2)
+    LED5 = LED(1)
+    LED6 = LED(2)
+    LED7 = LED(1)
+    LED8 = LED(2)
+    LED9 = LED(1)
+    LED10 = LED(2)
+    LED11 = LED(1)
+    LED12 = LED(2)
+    
+    #LEDn = LED(#tallet inni her refererer til GPIO nummer, den er ikke det samme som LED nummer pre se)
+
+
+    #liste over alle initialiserte LED
+    #Led_lys og Hall_effekt burde ha samme lengde ettersom en realisert Hall_effekt burde medføre en realisert LED (mulig dette må endres senere)
+
+    Led_lys = [LED1, LED2, LED3,LED4, LED5,LED6,LED7,LED8,LED9,LED10,LED11,LED12]
+    '''
+
+    #en liste med alle sokkelene som er koblet til
+    sokkel_Id_list = list()
+
+    JobDone = False
+
+
+
+
+    while len(sokkel_Id_list) == 0:
+        sokkel_Id_list = await client_handler.get_IDs()
+        await asyncio.sleep(2)
+    
+
+    #Først må kommunikasjon etableres mellom sokkelene og Game master slik at begge er klar over hverandr
+
+    #neste er en variabel for gamestart og en variabel som tracker hvilken sokkel vi er på (0 betyr sokkel(id1), 1 betyr …, LED12)
+
+    Game_start = 0
+    pasient = ""
+
+    #Initialisering ferdig
+    #----------------------
+
+    while True:
+        if Game_start == 0:
+            socketReciveServer.settimeout(1)
+            Game_start, pasient = await waitForGamestart(socketReciveServer, sokkel_Id_list)
+        else:
+            socketReciveServer.settimeout(0)
+            await Gameloop(socketReciveServer, socketSendServer, sokkel_Id_list, Game_start, pasient)
+            await saveGame(socketReciveServer)
+            Game_start = 0
 
 async def game_master(pasient):
     global client_handler
@@ -181,8 +416,7 @@ async def corutine1():
         await server.serve_forever()
 
 async def corutine2():
-    Gamemaster = await game_master()
-    print("starting gamemaster")
+    Gamemaster = await GameMaster2()
 
 
 

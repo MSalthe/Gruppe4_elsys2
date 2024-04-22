@@ -11,6 +11,11 @@ Gameresults = { } #dictionary med steg pasient (dic)- sokkel (dic)- typedata (di
 latest_reading = []
 #NB SENDER TIL PORT 8003 RECIEVER PÅ 8004
 
+
+def score():
+    global Gameresults
+
+    
 async def getGamestate(socketServer):
     #henter data fra backend
     #formater data riktig
@@ -36,7 +41,7 @@ async def getGamestate(socketServer):
         socketServer.close()
         return Game_start, pasient
 
-async def waitForGamestart(UDPserver):
+async def waitForGamestart(socketServer):
     global client_handler
     #En status hvor den har initiert og venter på å starte spillet
     pasient = ""
