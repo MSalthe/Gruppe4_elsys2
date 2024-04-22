@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Final Graph Display</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="finalDataChart"></canvas>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/api/grafBehandler')  // Ensure this matches the backend endpoint
+                .then(response => response.json())
+                .then(data => {
+                    drawFinalGraph(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching final data:', error);
+                });
+        });
+
+        function drawFinalGraph(dataArray) {
+            const ctx = document.getElementById('finalDataChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dataArray.map((_, index) => `Point ${index + 1}`), // Label each point
+                    datasets: [{
+                        label: 'Random Number Data',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        data: dataArray
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            suggestedMax: 100 // This should match the range of your random numbers
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
