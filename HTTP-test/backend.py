@@ -1,13 +1,21 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, render_template, jsonify
 import random
 import json
-import time 
-import socket
 
 app = Flask(__name__)
 
-numbers = []
+data_file = 'data.json'
 
+def load_data():
+    try:
+        with open(data_file, 'r') as file:
+            return json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {"numbers": [], "tilt_angles": []}
+
+def save_data(data):
+    with open(data_file, 'w') as file:
+        json.dump(data, file)
 
 @app.route('/')
 def index():
@@ -35,9 +43,9 @@ def graf_view():
 def behandler():
     return render_template('behandler.html')
 
-@app.route('/grafBehandler')
-def graf_behandler_view(): 
-    return jsonify(numbers)
+@app.route('/grafBehandler.html')
+def graf_behandler(): 
+    return render_template('grafBehandler.html')
 
 # Generatorer
 @app.route('/api/hello', methods=['POST'])
@@ -53,14 +61,19 @@ def handle_text():
 
 @app.route('/api/newbutton', methods=['GET'])
 def init(): 
-    tilt_angle = random.randint(-100, 100)
-    time.sleep(1)  # Adjust the frequency of generation
-    graph_number = random.randint(0, 100)
-    numbers.append(graph_number)
-    return jsonify({
-        "tilt": tilt_angle,
-        "number": graph_number,
-    })
+    data = load_data()
+    tilt_angle = [random.randint(-100,100)]
+    graph_number = [random.randint(0,100)]
+    # Append new data to the existing data
+    data['numbers'].extend(graph_number)
+    data['tilt_angles'].extend(tilt_angle)
+    save_data(data)
+    return jsonify(data)
+
+@app.route('/api/newbutton2', methods=['GET'])
+def send_data():
+    data = load_data()
+    return jsonify(data)
 
 if __name__ == '__main__':
     app.run(debug=True)

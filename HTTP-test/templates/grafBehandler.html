@@ -2,46 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Final Graph Display</title>
+    <title>Graph Display</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <canvas id="finalDataChart"></canvas>
+    <canvas id="dataChart" width="800" height="1000"></canvas>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            fetch('/api/grafBehandler')  // Ensure this matches the backend endpoint
-                .then(response => response.json())
-                .then(data => {
-                    drawFinalGraph(data);
-                })
-                .catch(error => {
-                    console.error('Error fetching final data:', error);
-                });
-        });
-
-        function drawFinalGraph(dataArray) {
-            const ctx = document.getElementById('finalDataChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: dataArray.map((_, index) => `Point ${index + 1}`), // Label each point
-                    datasets: [{
-                        label: 'Random Number Data',
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        data: dataArray
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            suggestedMax: 100 // This should match the range of your random numbers
-                        }
+            fetch('/api/newbutton2')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('dataChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [...Array(data.numbers.length).keys()].map(i => `Point ${i + 1}`),
+                        datasets: [{
+                            label: 'Numbers',
+                            data: data.numbers,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            fill: false,
+                            yAxisID: 'y-axis-1'
+                        }, {
+                            label: 'Tilt Angles',
+                            data: data.tilt_angles,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            fill: false,
+                            yAxisID: 'y-axis-2'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            'y-axis-1': {
+                                type: 'linear',
+                                position: 'left'
+                            },
+                            'y-axis-2': {
+                                type: 'linear',
+                                position: 'right',
+                                grid: {
+                                    drawOnChartArea: false
+                                }
+                            }
+                        },
+                        responsive: true
                     }
-                }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading data:', error);
             });
-        }
+        });
     </script>
 </body>
 </html>
