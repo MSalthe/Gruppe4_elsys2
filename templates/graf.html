@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Graph Display</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="dataChart"></canvas>
+    <p id="data"></p>
+
+    <script>
+        let dataChart; // Declare this outside to maintain scope across functions
+
+        function makeHttpRequest() {
+            fetch('/api/newbutton')
+                .then(response => response.json())
+                .then(data => {
+                    if (dataChart) {
+                        updateGraph(data.number);
+                    } else {
+                        drawGraph(data.number);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during HTTP request:', error);
+                });
+        }
+
+            const ctx = document.getElementById('dataChart').getContext('2d');
+            dataChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Initial'], // Starting label
+                    datasets: [{
+                        label: 'Data Value',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        data: [] // Initialize with the first data point
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Attempts',
+                                font: {
+                                    size: 16
+                                },
+                                color: '#666'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Score',
+                                font: {
+                                    size: 16
+                                },
+                                color: '#666'
+                            },
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 10,
+                                min: 0,
+                                max: 100
+                            }
+                        }
+                    }
+                }
+            });
+
+        function updateGraph(newNumber) {
+            const nextLabel = dataChart.data.labels.length; // Just using index as label for simplicity
+            dataChart.data.labels.push(nextLabel.toString());
+            dataChart.data.datasets.forEach((dataset) => {
+                dataset.data.push(newNumber);
+            });
+            dataChart.update();
+        }
+
+        setInterval(makeHttpRequest, 500); // Poll every 3 seconds
+        
+    </script>
+
+    <div id="dataDisplay" style="white-space: pre-wrap;"></div>
+    
+</body>
+</html>

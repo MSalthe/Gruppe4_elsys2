@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Glass tilt</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glass Tilt Animation</title>
+    <style>
+        #glass {
+            width: 150px;
+            height: 200px;
+            background-image: url('/static/images/glass.jpg');
+            background-size: cover;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: transform 0.2s linear;
+        }
+    </style>
+
+</head>
+<body>
+<div id="glass"></div>
+
+    <script>
+        // Funksjon for å gjøre HTTP-forespørsel
+        function makeHttpRequest() {
+            // Gjør en HTTP-forespørsel (f.eks. med fetch API)
+            fetch('/api/newbutton')
+                .then(response => response.json())
+                .then(data => {
+                    // Modulerer tiltet til glasset basert på dataen mottatt
+                    tiltGlass(data);
+                })
+                .catch(error => {
+                    console.error('Feil ved HTTP-forespørsel:', error);
+                });
+        }
+
+        // Funksjon for å modulere tiltet til glasset
+        function tiltGlass(data) {
+            // Her kan du implementere logikk for å modulere tiltet til glasset basert på dataen mottatt
+            const glass = document.getElementById('glass');
+            const tiltAngle = data.tilt; // Anta at "tilt" er dataen du mottok
+
+            // Modulerer tiltet basert på dataen
+            glass.style.transform = `translate(-50%, -50%) rotate(${tiltAngle}deg)`;
+        }
+
+        // Gjør en HTTP-forespørsel intervallvis
+        setInterval(makeHttpRequest, 20);
+    </script>
+
+</body>
+</html>

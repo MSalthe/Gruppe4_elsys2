@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Graph Display</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="dataChart"></canvas>
+    <p id="data"></p>
+
+    <script>
+        // Initialize WebSocket connection
+        const ws = new WebSocket('ws://localhost:8003');
+
+        // Initialize the Chart.js chart
+        const ctx = document.getElementById('dataChart').getContext('2d');
+        const dataChart = new Chart(ctx, {
+            type: 'line', // or 'bar', 'pie', etc.
+            data: {
+                labels: [], // X-axis labels
+                datasets: [{
+                    label: 'Data Value',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: [], // Actual data
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        ws.onmessage = function(event) {
+            const receivedData = JSON.parse(event.data);
+            console.log('Data received:', receivedData);
+
+            // Assuming 'receivedData' has a structure like { number: randomNumber }
+            const randomNumber = receivedData.number;
+            document.getElementById('data').textContent = `Latest Random Number: ${randomNumber}`;
+
+            // Add data to chart
+            dataChart.data.labels.push(''); // Add a new label (e.g., a timestamp or a simple counter)
+            dataChart.data.datasets.forEach((dataset) => {
+                dataset.data.push(randomNumber); // Add the new data
+            });
+            dataChart.update(); // Refresh the chart
+        };
+
+        ws.onerror = function(error) {
+            console.error('WebSocket Error:', error);
+        };
+    </script>
+
+    <!-- Example placeholder for where to display the data -->
+    <div id="dataDisplay" style="white-space: pre-wrap;"></div>
+    
+</body>
+</html>

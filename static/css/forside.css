@@ -1,0 +1,60 @@
+body {
+    margin: 0px;
+    font-size: large; 
+    background-color: #54acec;
+}
+h1 {
+    color: navy;
+    margin-left: 30px;
+}
+.header {
+    padding: 20px;
+    text-align: center;
+    background: #54acec;
+    color: navy;
+    font-size: 20px;
+}
+#knapp {
+    background-color: whitesmoke;
+    border: none;
+    color: #54acec;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 30px;
+    margin: 2px 2px;
+    height: 110%;
+    width: 110%;
+    border-radius: 25px;
+    font-family: verdana;
+}
+#bildevenstre {
+    text-align: left;
+}
+#bildehøyre {
+    text-align: right;
+}
+#pasient {
+    text-align: right;
+}
+#behandler {
+    text-align: left;
+}
+.grid-item {
+    background-color: #54acec; 
+    padding: 20px; 
+    border: 1px;
+    text-align: center; 
+}
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 50px;
+}
+#seks {
+    padding-left: 10px;
+}
+#syv {
+    padding-right: 10px;
+}
