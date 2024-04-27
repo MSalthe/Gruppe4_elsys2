@@ -75,5 +75,11 @@ def send_data():
     data = load_data()
     return jsonify(data)
 
+@app.route('/api/data')
+def get_data():
+    with open('data.json', 'r') as file:
+        data = json.load(file)
+    return jsonify(data)
+
 if __name__ == '__main__':
     app.run(debug=True)

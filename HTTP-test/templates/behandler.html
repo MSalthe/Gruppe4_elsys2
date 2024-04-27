@@ -62,15 +62,16 @@
                 </div>
                 <div class="siste_resultat">
                     <div id="siste_resultat1" class="tabcontent grid-item tekst">
-                        <h2>14.04.2024:</h2>
-                        <div class="box_uten grid-item-four">
+                        <h2>Økt 1:</h2>
+                        <div class="box_uten grid-item-four">     
                             <div class="tilt">
                                 <h3 class="tekst">Tilt:</h3>
-                                <h3>76</h3>
+                                <h3 id="tilt_angles">Loading...</h3>
+
                             </div>
                             <div class="tid">
                                 <h3 class="tekst">Tid:</h3>
-                                <h3>00:00</h3>
+                                <h3 id="time">Loading...</h3>
                             </div>
                             <div class="aksel">
                                 <h3 class="tekst">Akselerasjon:</h3>
@@ -78,10 +79,28 @@
                             </div>
                             <div class="score">
                                 <h3 class="tekst">Score:</h3>
-                                <h3>222</h3>
+                                <h3 id="numbers">Loading...</h3>
                             </div>
                         </div>
                     </div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            fetch('/api/data')
+                            .then(response => response.json())
+                            .then(data => {
+                                // Update the HTML with the data from the first session (index 0 of the arrays)
+                                document.getElementById('tilt_angles').textContent = data.tilt_angles[0];
+                                document.getElementById('time').textContent = data.time[0] + 's';  // Adding 's' to denote seconds
+                                document.getElementById('numbers').textContent = data.numbers[0];
+                            })
+                            .catch(error => {
+                                console.error('Error loading data:', error);
+                                document.getElementById('tilt_angles').textContent = 'Error';
+                                document.getElementById('time').textContent = 'Error';
+                                document.getElementById('numbers').textContent = 'Error';
+                            });
+                        });
+                    </script>
                     <div id="siste_resultat2" class="tabcontent grid-item tekst">
                         <h2>14.04.2024:</h2>
                         <div class="box_uten grid-item-four">
