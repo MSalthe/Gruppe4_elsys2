@@ -5,6 +5,7 @@ import connection_handler as connection_handler_
 from gpiozero import LED, InputDevice, LEDBoard, PWMLED
 from random import randint
 import socket
+import json
 
 
 Gameresults = { } #dictionary med steg pasient (dic)- sokkel (dic)- typedata (dic)- liste
@@ -70,14 +71,29 @@ async def sendLastReading(socketServer, temp_dic):
     return 0
 
 
-async def saveGame(socketServer):
+async def saveGame(socketServer, pasient):
     global Gameresults
 
-    #åpner fil og json dumper i filen
+    save_data = {}
 
+    # Attempt to open the pasient file
+    try:
+        with open(f"{pasient}.json", "r") as f:
+            data = json.load(f)
+    except:
+        data = {}
 
-    #alle data er integers
-    #Data ønsket: score, average tilt alle brikkene sammen, average tid per sokkel, alle datapunkter
+    # Set first key of the save data to the highest session number in data + 1 (or 0 if data is empty)
+    save_data[str(max((int(k) for k in data.keys()), default=-1) + 1)] = Gameresults[pasient]
+    # Update the data with the new save data
+    data.update(save_data)
+
+    # Write the data back to the file as a styled JSON
+    with open(f"{pasient}.json", "w") as f:
+        json.dump(data, f, indent=4)
+
+    #Create json
+    #json.dump(Gameresults, open("GameResults.json", "w"))
 
     '''
     #sender game ended
@@ -128,7 +144,7 @@ async def Gameloop(socketReciveServer, socketSendServer, sokkel_Id_list, Game_st
                 Akselerasjon.append([temp_dic["accel_x"], temp_dic["accel_y"], temp_dic["accel_z"]])
                 Gyro.append([temp_dic["gyro_x"], temp_dic["gyro_y"], temp_dic["gyro_z"]])
                 Time.append(temp_dic["timestamp"])
-                print("Gamemaster Tilt: ", Gyro, "   Akselerasjon: ", Akselerasjon, "   Time: ", Time)
+                #print("Gamemaster Tilt: ", Gyro, "   Akselerasjon: ", Akselerasjon, "   Time: ", Time)
 
             #await sendLastReading(socketSendServer, temp_dic)
             Game_start, ikkeBrukPasient = await getGamestate(socketReciveServer, Game_start)
@@ -262,7 +278,7 @@ async def GameMaster2():
         else:
             socketReciveServer.settimeout(0)
             await Gameloop(socketReciveServer, socketSendServer, sokkel_Id_list, Game_start, pasient)
-            await saveGame(socketReciveServer)
+            await saveGame(socketReciveServer, pasient)
             Game_start = 0
 
 async def game_master(pasient):
@@ -393,7 +409,7 @@ async def game_master(pasient):
                         Akselerasjon.append([temp_dic["accel_x"], temp_dic["accel_y"], temp_dic["accel_z"]])
                         Gyro.append([temp_dic["gyro_x"], temp_dic["gyro_y"], temp_dic["gyro_z"]])
                         Time.append(temp_dic["timestamp"])
-                        print("Gamemaster Tilt: ", Gyro, "   Akselerasjon: ", Akselerasjon, "   Time: ", Time)
+                        #print("Gamemaster Tilt: ", Gyro, "   Akselerasjon: ", Akselerasjon, "   Time: ", Time)
                         #send data to backend
                     #Game_start = getBackEnd()
                     if Game_start == 0:
