@@ -6,7 +6,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <canvas id="dataChart" width="800" height="800"></canvas>
+    <div style="width: 600px; overflow-x: auto;">
+    <canvas id="dataChart" width="2000" height="1200"></canvas>
+    </div>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             fetch('/api/newbutton2')
@@ -36,6 +39,13 @@
                             data: data.time,
                             borderColor: 'rgba(0, 128, 0, 1)',
                             backgroundColor: 'rgba(0, 128, 0, 0.8)', 
+                            fill: false,
+                            yAxisID: 'y-axis-1'
+                        },{
+                            label: 'Akselerasjon',
+                            data: data.acceleration,
+                            borderColor: 'rgba(255, 165, 0, 1)',
+                            backgroundColor: 'rgba(255, 165, 0, 0.8)', 
                             fill: false,
                             yAxisID: 'y-axis-1'
                         }]
