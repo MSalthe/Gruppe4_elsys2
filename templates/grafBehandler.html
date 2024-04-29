@@ -6,17 +6,31 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <canvas id="dataChart" width="800" height="800"></canvas>
+    <div style="width: 600px; overflow-x: auto;">
+    <canvas id="dataChart" width="2000" height="1200"></canvas>
+    </div>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             fetch('/api/newbutton2')
             .then(response => response.json())
             .then(data => {
+                if (data.numbers.length > 10) {
+                    data.numbers = data.numbers.slice(-10);
+                    data.tilt_angles = data.tilt_angles.slice(-10);
+                    data.time = data.time.slice(-10);
+                    data.acceleration = data.acceleration.slice(-10);
+                }
+    
+                // Create labels for the chart based on the sliced data
+                const labels = data.numbers.map((_, index) => `Økt ${data.numbers.length - 10 + index + 1}`);
+    
+                // Now create the chart with the sliced data and new labels
                 const ctx = document.getElementById('dataChart').getContext('2d');
                 const chart = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: [...Array(data.numbers.length).keys()].map(i => `Økt ${i + 1}`),
+                        labels: labels, // use the new labels here
                         datasets: [{
                             label: 'Score',
                             data: data.numbers,
@@ -38,9 +52,17 @@
                             backgroundColor: 'rgba(0, 128, 0, 0.8)', 
                             fill: false,
                             yAxisID: 'y-axis-1'
+                        },{
+                            label: 'Akselerasjon',
+                            data: data.acceleration,
+                            borderColor: 'rgba(255, 165, 0, 1)',
+                            backgroundColor: 'rgba(255, 165, 0, 0.8)', 
+                            fill: false,
+                            yAxisID: 'y-axis-1'
                         }]
                     },
                     options: {
+                        responsive: true,
                         plugins: {
                             title: {
                                 display: true,
@@ -56,7 +78,7 @@
                                 position: 'left'
                             }
                         },
-                        responsive: true
+                        maintainAspectRatio: false
                     }
                 });
             })
@@ -65,5 +87,6 @@
             });
         });
     </script>
+    
 </body>
 </html>

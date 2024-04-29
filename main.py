@@ -6,6 +6,7 @@ from gpiozero import LED, InputDevice, LEDBoard, PWMLED
 from random import randint
 import socket
 import json
+import math
 
 
 Gameresults = { } #dictionary med steg pasient (dic)- sokkel (dic)- typedata (dic)- liste
@@ -32,19 +33,42 @@ async def saveFullreading(pasient, sokkel):
 async def calculate_averages(pasient, sokkel_Id_list):
     global Gameresults
 
-    tilt_x_offset = 0
-    tilt_y_offset = 0
-    tilt_z_offset = 0
-
-
+    tilt_y_offset = -9200
+    tilt_list = 0
+    tid_list = 0
+    accel_list = 0
     
+
     for sokkel in sokkel_Id_list:
+        tilt_y = 0
+        tid = 0
+        accel_x = 0
+        accel_y = 0
+        accel_z = 0
+        accel_average = 0
+
         for i in range(len(Gameresults[pasient][sokkel]["timestamp"])):
-            
+            tilt_y += abs(Gameresults[pasient][sokkel]["gyro_y"] - tilt_y_offset)
+            accel_x = Gameresults[pasient][sokkel]["accel_x"]
+            accel_y = Gameresults[pasient][sokkel]["accel_y"]
+            accel_z = Gameresults[pasient][sokkel]["accel_z"]
+            Accel += math.sqrt(accel_x**2+accel_y**2+accel_z**2)
+        tid = Gameresults[pasient][sokkel]["timestamp"][-1]-Gameresults[pasient][sokkel]["timestamp"][0]
+        tid_list += tid
+        tilt_list += tilt_y/len(Gameresults[pasient][sokkel]["timestamp"])
+        Accel = Accel/len(Gameresults[pasient][sokkel]["timestamp"])
+        accel_list += Accel
         
+    tid_list = tid_list/len(sokkel_Id_list)
+    tilt_list = tilt_list/len(sokkel_Id_list)
+    accel_list = accel_list/len(sokkel_Id_list)
+
+    Gameresults[pasient]["Tilt"] = tilt_list
+    Gameresults[pasient]["Tid"] = tid_list
+    Gameresults[pasient]["Akselerasjon"] = accel_list
 
     #alle data er integers
-    #Data ønsket: score, average tilt alle brikkene sammen, average tid per sokkel, alle datapunkter
+    #Data ønsket: score, average tilt alle brikkene sammen, average tid per sokkel
 
 async def getGamestate(socketServer, preGamestart):
     #henter data fra backend
