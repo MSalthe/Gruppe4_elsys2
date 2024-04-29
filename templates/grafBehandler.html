@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Graph Display</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="dataChart" width="800" height="800"></canvas>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/api/newbutton2')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('dataChart').getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: [...Array(data.numbers.length).keys()].map(i => `Økt ${i + 1}`),
+                        datasets: [{
+                            label: 'Score',
+                            data: data.numbers,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                            fill: false,
+                            yAxisID: 'y-axis-1'
+                        }, {
+                            label: 'Tilt',
+                            data: data.tilt_angles,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                            fill: false,
+                            yAxisID: 'y-axis-1'
+                        }, {
+                            label: 'Tid',
+                            data: data.time,
+                            borderColor: 'rgba(0, 128, 0, 1)',
+                            backgroundColor: 'rgba(0, 128, 0, 0.8)', 
+                            fill: false,
+                            yAxisID: 'y-axis-1'
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Gjennomsnitt',
+                                font: {
+                                    size: 18
+                                }
+                            }
+                        },
+                        scales: {
+                            'y-axis-1': {
+                                type: 'linear',
+                                position: 'left'
+                            }
+                        },
+                        responsive: true
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading data:', error);
+            });
+        });
+    </script>
+</body>
+</html>

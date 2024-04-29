@@ -74,6 +74,8 @@ async def sendLastReading(socketServer, temp_dic):
 async def saveGame(socketServer, pasient):
     global Gameresults
 
+    #åpner fil og json dumper i filen
+
     save_data = {}
 
     # Attempt to open the pasient file
@@ -95,10 +97,13 @@ async def saveGame(socketServer, pasient):
     #Create json
     #json.dump(Gameresults, open("GameResults.json", "w"))
 
+    #alle data er integers
+    #Data ønsket: score, average tilt alle brikkene sammen, average tid per sokkel, alle datapunkter
+
     '''
     #sender game ended
     address = ('127.0.0.1', 8004)
-    socketServer.bind(address)
+
     Reading = "Game_start 0"
     Reading = str.encode(Reading)
     
@@ -144,7 +149,7 @@ async def Gameloop(socketReciveServer, socketSendServer, sokkel_Id_list, Game_st
                 Akselerasjon.append([temp_dic["accel_x"], temp_dic["accel_y"], temp_dic["accel_z"]])
                 Gyro.append([temp_dic["gyro_x"], temp_dic["gyro_y"], temp_dic["gyro_z"]])
                 Time.append(temp_dic["timestamp"])
-                #print("Gamemaster Tilt: ", Gyro, "   Akselerasjon: ", Akselerasjon, "   Time: ", Time)
+                print("Gamemaster Tilt: ", Gyro, "   Akselerasjon: ", Akselerasjon, "   Time: ", Time)
 
             #await sendLastReading(socketSendServer, temp_dic)
             Game_start, ikkeBrukPasient = await getGamestate(socketReciveServer, Game_start)
@@ -409,7 +414,7 @@ async def game_master(pasient):
                         Akselerasjon.append([temp_dic["accel_x"], temp_dic["accel_y"], temp_dic["accel_z"]])
                         Gyro.append([temp_dic["gyro_x"], temp_dic["gyro_y"], temp_dic["gyro_z"]])
                         Time.append(temp_dic["timestamp"])
-                        #print("Gamemaster Tilt: ", Gyro, "   Akselerasjon: ", Akselerasjon, "   Time: ", Time)
+                        print("Gamemaster Tilt: ", Gyro, "   Akselerasjon: ", Akselerasjon, "   Time: ", Time)
                         #send data to backend
                     #Game_start = getBackEnd()
                     if Game_start == 0:

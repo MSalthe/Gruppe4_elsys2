@@ -34,7 +34,18 @@ client_socket2.settimeout(20)
 
 game_start = 0
 
+data_file = 'pasient1.json'
 
+def load_data():
+    try:
+        with open(data_file, 'r') as file:
+            return json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {"numbers": [], "tilt_angles": []}
+
+def save_data(data):
+    with open(data_file, 'w') as file:
+        json.dump(data, file)
 
 def website():
     global client_socket
@@ -60,6 +71,9 @@ def website():
     def behandler_view():
         return render_template('behandler.html')
 
+    @app.route('/grafBehandler.html')
+    def graf_behandler(): 
+        return render_template('grafBehandler.html')
 
     @app.route('/api/hello', methods=['POST'])
     def hello():
