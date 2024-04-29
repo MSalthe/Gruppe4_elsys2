@@ -60,32 +60,47 @@
                         <h3>Grafen til pasient 7</h3>
                     </div>
                 </div>
+
                 <script>
                     document.addEventListener('DOMContentLoaded', function() {
                         fetch('/api/newbutton2')
                             .then(response => response.json())
                             .then(data => {
-                                if (data.tilt_angles.length >= 2) {
+                                if (data.tilt_angles.length >= 10) {
+                                    const lastTenNumbers = data.numbers.slice(-10);
+                                    const averageScoreLastTen = lastTenNumbers.reduce((sum, current) => sum + current, 0) / lastTenNumbers.length;
+                
+                                    // Update the DOM with the average for the last 10 scores
+                                    document.getElementById('averageScore').textContent = averageScoreLastTen.toFixed(2);
+                
                                     // Update the latest session details
                                     document.getElementById('latestTilt').textContent = data.tilt_angles[data.tilt_angles.length - 1];
                                     document.getElementById('latestTime').textContent = data.time[data.time.length - 1] + 's';
                                     document.getElementById('latestScore').textContent = data.numbers[data.numbers.length - 1];
                                     document.getElementById('latestAcc').textContent = data.acceleration[data.acceleration.length -1];
-
+                
                                     // Update the previous session details
                                     document.getElementById('prevTilt').textContent = data.tilt_angles[data.tilt_angles.length - 2];
                                     document.getElementById('prevTime').textContent = data.time[data.time.length - 2] + 's';
                                     document.getElementById('prevScore').textContent = data.numbers[data.numbers.length - 2];
                                     document.getElementById('prevAcc').textContent = data.acceleration[data.acceleration.length - 2];
+                
+                                    // Find the highest score among the last 10
+                                    const highestScoreLastTen = Math.max(...lastTenNumbers);
+                                    document.getElementById('highScore').textContent = highestScoreLastTen;
+                
                                 } else {
-                                    console.error('Insufficient data for both sessions.');
+                                    console.error('Insufficient data for calculations.');
+                                    // If there are not enough data points, you may want to handle it differently
+                                    // For example, display a message or handle the logic for fewer data points
                                 }
                             })
                             .catch(error => {
                                 console.error('Failed to fetch or process data:', error);
                             });
-                        });
+                    });
                 </script>
+                
 
                 <!-- Nyeste økt  -->
                 <div class="siste_resultat">
@@ -246,7 +261,7 @@
                     <div id="gjennomsnitt1" class="tabcontent grid-item tekst">
                         <h2>Gjennomsnitt:</h2>
                         <div class="box">
-                            <h3>245</h3>
+                            <h3 id="averageScore">Loading...</h3>
                         </div>
                     </div>
                     <div id="gjennomsnitt2" class="tabcontent grid-item tekst">
@@ -290,7 +305,7 @@
                     <div id="hoyeste-score1" class="tabcontent grid-item tekst">
                         <h2>Høyeste score:</h2>
                         <div class="box">
-                            <h3>310</h3>
+                            <h3 id="highScore">Loading...</h3>
                         </div>
                     </div> 
                     <div id="hoyeste-score2" class="tabcontent grid-item tekst">
