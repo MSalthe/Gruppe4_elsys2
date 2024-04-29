@@ -11,13 +11,40 @@ import json
 Gameresults = { } #dictionary med steg pasient (dic)- sokkel (dic)- typedata (dic)- liste
 
 
-async def score():
+async def score(sokkel_Id_list):
     score = 0
-
+    
 
     return 
 
+async def saveFullreading(pasient, sokkel):
+    global Gameresults
 
+    readings = await client_handler.get_all_readings(str(sokkel))
+    Gameresults[pasient][sokkel]["timestamp"] = readings["timestamp"]
+    Gameresults[pasient][sokkel]["accel_x"] = readings["accel_x"]
+    Gameresults[pasient][sokkel]["accel_y"] = readings["accel_y"]
+    Gameresults[pasient][sokkel]["accel_z"] = readings["accel_z"]
+    Gameresults[pasient][sokkel]["gyro_x"] = readings["gyro_x"]
+    Gameresults[pasient][sokkel]["gyro_y"] = readings["gyro_y"]
+    Gameresults[pasient][sokkel]["gyro_z"] = readings["gyro_z"]
+
+async def calculate_averages(pasient, sokkel_Id_list):
+    global Gameresults
+
+    tilt_x_offset = 0
+    tilt_y_offset = 0
+    tilt_z_offset = 0
+
+
+    
+    for sokkel in sokkel_Id_list:
+        for i in range(len(Gameresults[pasient][sokkel]["timestamp"])):
+            
+        
+
+    #alle data er integers
+    #Data ønsket: score, average tilt alle brikkene sammen, average tid per sokkel, alle datapunkter
 
 async def getGamestate(socketServer, preGamestart):
     #henter data fra backend
@@ -97,9 +124,6 @@ async def saveGame(socketServer, pasient):
     #Create json
     #json.dump(Gameresults, open("GameResults.json", "w"))
 
-    #alle data er integers
-    #Data ønsket: score, average tilt alle brikkene sammen, average tid per sokkel, alle datapunkter
-
     '''
     #sender game ended
     address = ('127.0.0.1', 8004)
@@ -155,14 +179,7 @@ async def Gameloop(socketReciveServer, socketSendServer, sokkel_Id_list, Game_st
             Game_start, ikkeBrukPasient = await getGamestate(socketReciveServer, Game_start)
             if Game_start == 0:
                 print("Game cancelled")
-                readings = await client_handler.get_all_readings(str(sokkel))
-                Gameresults[pasient][sokkel]["timestamp"] = readings["timestamp"]
-                Gameresults[pasient][sokkel]["accel_x"] = readings["accel_x"]
-                Gameresults[pasient][sokkel]["accel_y"] = readings["accel_y"]
-                Gameresults[pasient][sokkel]["accel_z"] = readings["accel_z"]
-                Gameresults[pasient][sokkel]["gyro_x"] = readings["gyro_x"]
-                Gameresults[pasient][sokkel]["gyro_y"] = readings["gyro_y"]
-                Gameresults[pasient][sokkel]["gyro_z"] = readings["gyro_z"]
+                await saveFullreading(pasient, sokkel)
                 print("collected data from sokkel run")
                 Reading = "0 0 0 0 0 0 "+ str(temp_dic["timestamp"])
                 Reading = str.encode(Reading) #codek register encoding
@@ -171,14 +188,7 @@ async def Gameloop(socketReciveServer, socketSendServer, sokkel_Id_list, Game_st
             if (await client_handler.get_connected(str(sokkel)) == False):
                 print("lost sokkel connection")
         #Led_lys[RandomHull].off()
-        readings = await client_handler.get_all_readings(str(sokkel))
-        Gameresults[pasient][sokkel]["timestamp"] = readings["timestamp"]
-        Gameresults[pasient][sokkel]["accel_x"] = readings["accel_x"]
-        Gameresults[pasient][sokkel]["accel_y"] = readings["accel_y"]
-        Gameresults[pasient][sokkel]["accel_z"] = readings["accel_z"]
-        Gameresults[pasient][sokkel]["gyro_x"] = readings["gyro_x"]
-        Gameresults[pasient][sokkel]["gyro_y"] = readings["gyro_y"]
-        Gameresults[pasient][sokkel]["gyro_z"] = readings["gyro_z"]
+        saveFullreading(pasient, sokkel)
         print("collected data from sokkel run")
 
     #sendToBackend("Game finished", Gameresults)
@@ -188,6 +198,8 @@ async def Gameloop(socketReciveServer, socketSendServer, sokkel_Id_list, Game_st
     socketSendServer.sendto(Reading, ('127.0.0.1', 8148)) 
     #kanskje Game_start skal være lik 2 slik at backend får en oppgavekode
     await client_handler.send_to_client(str(sokkel), "set_gameplay_state idle")
+
+    #calculate averages
     return 0
 
 async def GameMaster2():

@@ -45,7 +45,7 @@ def load_data():
 
 def save_data(data):
     with open(data_file, 'w') as file:
-        json.dump(data, file)
+        json.dump(data, file) 
 
 def website():
     global client_socket
