@@ -213,7 +213,7 @@ class connection_handler:
             print("ERROR: Tried to reset data for an invalid client ID: " + client_id)
             return ClientReturnCodes.ERR_INVALID_CLIENT_ID
 
-    # send_to_client: Use this to send commands. See commands.txt for a list of commands.
+    # send_to_client: DEPRECATED! Sends raw message to client. Use send_command_to_client instead.
     async def send_to_client(self, client_id, message): # client_id must be a string with the following format: "client_(int)"
         if client_id in self._clients:
             if debug: print(f"Sending message to client {client_id}: {message}")
@@ -224,6 +224,9 @@ class connection_handler:
             print("ERROR: Tried to send message to an invalid client ID: " + client_id)
             return ClientReturnCodes.ERR_INVALID_CLIENT_ID
     
+    async def send_command_to_client(self, client_id, command, flag = -1, value = -1): # Wrapper for send_to_client
+        return await self.send_to_client(client_id, format_command_message(command, flag, value))
+
     async def get_IDs(self):
         return self._clients.keys()
     
