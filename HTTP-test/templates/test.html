@@ -12,7 +12,7 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            fetch('/api/newbutton2')
+            fetch('/api/newbutton3')
             .then(response => response.json())
             .then(data => {
                 if (data.numbers.length > 10) {
@@ -40,7 +40,7 @@
                             yAxisID: 'y-axis-1'
                         }, {
                             label: 'Tilt',
-                            data: data.tilt_angles,
+                            data: data.tilt,
                             borderColor: 'rgba(54, 162, 235, 1)',
                             backgroundColor: 'rgba(54, 162, 235, 0.8)',
                             fill: false,
@@ -54,7 +54,7 @@
                             yAxisID: 'y-axis-1'
                         },{
                             label: 'Akselerasjon',
-                            data: data.acceleration,
+                            data: data.acc,
                             borderColor: 'rgba(255, 165, 0, 1)',
                             backgroundColor: 'rgba(255, 165, 0, 0.8)', 
                             fill: false,

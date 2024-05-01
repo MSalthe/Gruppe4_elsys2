@@ -10,33 +10,19 @@
     <p id="data"></p>
 
     <script>
-        let dataChart; // Declare this outside to maintain scope across functions
-
-        function makeHttpRequest() {
-            fetch('/api/newbutton')
-                .then(response => response.json())
-                .then(data => {
-                    if (dataChart) {
-                        updateGraph(data.number);
-                    } else {
-                        drawGraph(data.number);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error during HTTP request:', error);
-                });
-        }
-
+        let dataChart;
+        
+        document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('dataChart').getContext('2d');
             dataChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Initial'], // Starting label
+                    labels: [], // Initialize without labels
                     datasets: [{
                         label: 'Data Value',
                         backgroundColor: 'rgba(255, 99, 132, 0.2)',
                         borderColor: 'rgba(255, 99, 132, 1)',
-                        data: [] // Initialize with the first data point
+                        data: [] // Start with empty data array
                     }]
                 },
                 options: {
@@ -44,7 +30,7 @@
                         x: {
                             title: {
                                 display: true,
-                                text: 'Attempts',
+                                text: 'Attempt Number',
                                 font: {size: 16},
                                 color: '#666'
                             }
@@ -66,17 +52,32 @@
                     }
                 }
             });
-
-        function updateGraph(newNumber) {
-            const nextLabel = dataChart.data.labels.length; // Just using index as label for simplicity
-            dataChart.data.labels.push(nextLabel.toString());
-            dataChart.data.datasets.forEach((dataset) => {
-                dataset.data.push(newNumber);
+        
+            setInterval(makeHttpRequest, 2000); // Poll every 2000 milliseconds for fresh data
+        });
+        
+        function makeHttpRequest() {
+            fetch('/api/newbutton')
+                .then(response => response.json())
+                .then(data => {
+                    updateGraph(data.numbers);
+                })
+                .catch(error => {
+                    console.error('Error during HTTP request:', error);
+                });
+        }
+        
+        function updateGraph(newNumbers) {
+            newNumbers.forEach((num, index) => {
+                const nextLabel = dataChart.data.labels.length + 1; // Increment label count
+                dataChart.data.labels.push('Point ' + nextLabel);
+                dataChart.data.datasets.forEach((dataset) => {
+                    dataset.data.push(num);
+                });
             });
             dataChart.update();
         }
-
-        setInterval(makeHttpRequest, 20); // Poll every 20 milliseconds
+        </script>
         
     </script>
 

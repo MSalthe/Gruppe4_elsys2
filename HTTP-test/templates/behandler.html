@@ -42,22 +42,22 @@
                         <iframe src="/grafBehandler.html" frameborder="0" width="100%" height="400"></iframe>
                     </div>
                     <div id="graf2" class="tabcontent" class="grid-item">
-                        <h3>Grafen til pasient 2</h3>
+                        <iframe src="/test.html" frameborder="0" width="100%" height="400"></iframe>
                     </div>
                     <div id="graf3" class="tabcontent" class="grid-item">
-                        <h3>Grafen til pasient 3</h3>
+                        <h3>Graf</h3>
                     </div>
                     <div id="graf4" class="tabcontent" class="grid-item">
-                        <h3>Grafen til pasient 4</h3>
+                        <iframe src="/test.html" frameborder="0" width="100%" height="400"></iframe>
                     </div>
                     <div id="graf5" class="tabcontent" class="grid-item">
-                        <h3>Grafen til pasient 5</h3>
+                        <iframe src="/test.html" frameborder="0" width="100%" height="400"></iframe>
                     </div>
                     <div id="graf6" class="tabcontent" class="grid-item">
-                        <h3>Grafen til pasient 6</h3>
+                        <iframe src="/test.html" frameborder="0" width="100%" height="400"></iframe>
                     </div>
                     <div id="graf7" class="tabcontent" class="grid-item">
-                        <h3>Grafen til pasient 7</h3>
+                        <iframe src="/test.html" frameborder="0" width="100%" height="400"></iframe>
                     </div>
                 </div>
 
@@ -86,9 +86,49 @@
                                     document.getElementById('prevAcc').textContent = data.acceleration[data.acceleration.length - 2];
                 
                                     // Find the highest score among the last 10
-                                    const highestScoreLastTen = Math.max(...lastTenNumbers);
-                                    document.getElementById('highScore').textContent = highestScoreLastTen;
+                                    const highestScore = Math.max(...data.numbers);
+                                    document.getElementById('highScore').textContent = highestScore;
                 
+                                } else {
+                                    console.error('Insufficient data for calculations.');
+                                    // If there are not enough data points, you may want to handle it differently
+                                    // For example, display a message or handle the logic for fewer data points
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Failed to fetch or process data:', error);
+                            });
+                    });
+                </script>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        fetch('/api/newbutton3')
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.tilt.length >= 10) {
+                                    const lastTenNumbers = data.numbers.slice(-10);
+                                    const averageScoreLastTen = lastTenNumbers.reduce((sum, current) => sum + current, 0) / lastTenNumbers.length;
+
+                                    // Update the DOM with the average for the last 10 scores
+                                    document.getElementById('averageScore2').textContent = averageScoreLastTen.toFixed(2);
+
+                                    // Update the latest session details
+                                    document.getElementById('latestTilt2').textContent = data.tilt[data.tilt.length - 1];
+                                    document.getElementById('latestTime2').textContent = data.time[data.time.length - 1] + 's';
+                                    document.getElementById('latestScore2').textContent = data.numbers[data.numbers.length - 1];
+                                    document.getElementById('latestAcc2').textContent = data.acc[data.acc.length -1];
+
+                                    // Update the previous session details
+                                    document.getElementById('prevTilt2').textContent = data.tilt[data.tilt.length - 2];
+                                    document.getElementById('prevTime2').textContent = data.time[data.time.length - 2] + 's';
+                                    document.getElementById('prevScore2').textContent = data.numbers[data.numbers.length - 2];
+                                    document.getElementById('prevAcc2').textContent = data.acc[data.acc.length - 2];
+
+                                    // Find the highest score 
+                                    const highestScore = Math.max(...data.numbers);
+                                    document.getElementById('highScore2').textContent = highestScore;
+
                                 } else {
                                     console.error('Insufficient data for calculations.');
                                     // If there are not enough data points, you may want to handle it differently
@@ -128,129 +168,134 @@
                     </div>
                     
                     <div id="siste_resultat2" class="tabcontent grid-item tekst">
-                        <h2>14.04.2024:</h2>
-                        <div class="box_uten grid-item-four">
+                        <h4>Nyeste økt</h4>
+                        <div class="box_uten grid-item-four">     
                             <div class="tilt">
                                 <h3 class="tekst">Tilt:</h3>
-                                <h3>76</h3>
+                                <h3 id="latestTilt2">Loading...</h3>
+
                             </div>
                             <div class="tid">
                                 <h3 class="tekst">Tid:</h3>
-                                <h3>00:00</h3>
+                                <h3 id="latestTime2">Loading...</h3>
                             </div>
                             <div class="aksel">
                                 <h3 class="tekst">Akselerasjon:</h3>
-                                <h3>50</h3>
+                                <h3 id="latestAcc2">Loading...</h3>
                             </div>
                             <div class="score">
                                 <h3 class="tekst">Score:</h3>
-                                <h3>222</h3>
+                                <h3 id="latestScore2">Loading...</h3>
                             </div>
                         </div>
                     </div>
                     <div id="siste_resultat3" class="tabcontent grid-item tekst">
-                        <h2>14.04.2024:</h2>
-                        <div class="box_uten grid-item-four">
+                        <h4>Nyeste økt</h4>
+                        <div class="box_uten grid-item-four">     
                             <div class="tilt">
                                 <h3 class="tekst">Tilt:</h3>
-                                <h3>76</h3>
+                                <h3 id="latestTilt2">Loading...</h3>
+
                             </div>
                             <div class="tid">
                                 <h3 class="tekst">Tid:</h3>
-                                <h3>00:00</h3>
+                                <h3 id="latestTime2">Loading...</h3>
                             </div>
                             <div class="aksel">
                                 <h3 class="tekst">Akselerasjon:</h3>
-                                <h3>50</h3>
+                                <h3 id="latestAcc2">Loading...</h3>
                             </div>
                             <div class="score">
                                 <h3 class="tekst">Score:</h3>
-                                <h3>222</h3>
+                                <h3 id="latestScore2">Loading...</h3>
                             </div>
                         </div>
                     </div>
                     <div id="siste_resultat4" class="tabcontent grid-item tekst">
-                        <h2>14.04.2024:</h2>
-                        <div class="box_uten grid-item-four">
+                        <h4>Nyeste økt</h4>
+                        <div class="box_uten grid-item-four">     
                             <div class="tilt">
                                 <h3 class="tekst">Tilt:</h3>
-                                <h3>76</h3>
+                                <h3 id="latestTilt2">Loading...</h3>
+
                             </div>
                             <div class="tid">
                                 <h3 class="tekst">Tid:</h3>
-                                <h3>00:00</h3>
+                                <h3 id="latestTime2">Loading...</h3>
                             </div>
                             <div class="aksel">
                                 <h3 class="tekst">Akselerasjon:</h3>
-                                <h3>50</h3>
+                                <h3 id="latestAcc2">Loading...</h3>
                             </div>
                             <div class="score">
                                 <h3 class="tekst">Score:</h3>
-                                <h3>222</h3>
+                                <h3 id="latestScore2">Loading...</h3>
                             </div>
                         </div>
                     </div>
                     <div id="siste_resultat5" class="tabcontent grid-item tekst">
-                        <h2>14.04.2024:</h2>
-                        <div class="box_uten grid-item-four">
+                        <h4>Nyeste økt</h4>
+                        <div class="box_uten grid-item-four">     
                             <div class="tilt">
                                 <h3 class="tekst">Tilt:</h3>
-                                <h3>76</h3>
+                                <h3 id="latestTilt2">Loading...</h3>
+
                             </div>
                             <div class="tid">
                                 <h3 class="tekst">Tid:</h3>
-                                <h3>00:00</h3>
+                                <h3 id="latestTime2">Loading...</h3>
                             </div>
                             <div class="aksel">
                                 <h3 class="tekst">Akselerasjon:</h3>
-                                <h3>50</h3>
+                                <h3 id="latestAcc2">Loading...</h3>
                             </div>
                             <div class="score">
                                 <h3 class="tekst">Score:</h3>
-                                <h3>222</h3>
+                                <h3 id="latestScore2">Loading...</h3>
                             </div>
                         </div>
                     </div>
                     <div id="siste_resultat6" class="tabcontent grid-item tekst">
-                        <h2>14.04.2024:</h2>
-                        <div class="box_uten grid-item-four">
+                        <h4>Nyeste økt</h4>
+                        <div class="box_uten grid-item-four">     
                             <div class="tilt">
                                 <h3 class="tekst">Tilt:</h3>
-                                <h3>76</h3>
+                                <h3 id="latestTilt2">Loading...</h3>
+
                             </div>
                             <div class="tid">
                                 <h3 class="tekst">Tid:</h3>
-                                <h3>00:00</h3>
+                                <h3 id="latestTime2">Loading...</h3>
                             </div>
                             <div class="aksel">
                                 <h3 class="tekst">Akselerasjon:</h3>
-                                <h3>50</h3>
+                                <h3 id="latestAcc2">Loading...</h3>
                             </div>
                             <div class="score">
                                 <h3 class="tekst">Score:</h3>
-                                <h3>222</h3>
-                                <!-- -->
+                                <h3 id="latestScore2">Loading...</h3>
                             </div>
                         </div>
                     </div>
                     <div id="siste_resultat7" class="tabcontent grid-item tekst">
-                        <h2>14.04.2024:</h2>
-                        <div class="box_uten grid-item-four">
+                        <h4>Nyeste økt</h4>
+                        <div class="box_uten grid-item-four">     
                             <div class="tilt">
                                 <h3 class="tekst">Tilt:</h3>
-                                <h3>76</h3>
+                                <h3 id="latestTilt2">Loading...</h3>
+
                             </div>
                             <div class="tid">
                                 <h3 class="tekst">Tid:</h3>
-                                <h3>00:00</h3>
+                                <h3 id="latestTime2">Loading...</h3>
                             </div>
                             <div class="aksel">
                                 <h3 class="tekst">Akselerasjon:</h3>
-                                <h3>50</h3>
+                                <h3 id="latestAcc2">Loading...</h3>
                             </div>
                             <div class="score">
                                 <h3 class="tekst">Score:</h3>
-                                <h3>222</h3>
+                                <h3 id="latestScore2">Loading...</h3>
                             </div>
                         </div>
                     </div>
@@ -267,37 +312,37 @@
                     <div id="gjennomsnitt2" class="tabcontent grid-item tekst">
                         <h2>Gjennomsnitt:</h2>
                         <div class="box">
-                            <h3>245</h3>
+                            <h3 id="averageScore2">Loading...</h3>
                         </div>
                     </div>
                     <div id="gjennomsnitt3" class="tabcontent grid-item tekst">
                         <h2>Gjennomsnitt:</h2>
                         <div class="box">
-                            <h3>245</h3>
+                            <h3 id="averageScore2">Loading...</h3>
                         </div>
                     </div>
                     <div id="gjennomsnitt4" class="tabcontent grid-item tekst">
                         <h2>Gjennomsnitt:</h2>
                         <div class="box">
-                            <h3>245</h3>
+                            <h3 id="averageScore2">Loading...</h3>
                         </div>
                     </div>
                     <div id="gjennomsnitt5" class="tabcontent grid-item tekst">
                         <h2>Gjennomsnitt:</h2>
                         <div class="box">
-                            <h3>245</h3>
+                            <h3 id="averageScore2">Loading...</h3>
                         </div>
                     </div>
                     <div id="gjennomsnitt6" class="tabcontent grid-item tekst">
                         <h2>Gjennomsnitt:</h2>
                         <div class="box">
-                            <h3>245</h3>
+                            <h3 id="averageScore2">Loading...</h3>
                         </div>
                     </div>
                     <div id="gjennomsnitt7" class="tabcontent grid-item tekst">
                         <h2>Gjennomsnitt:</h2>
                         <div class="box">
-                            <h3>245</h3>
+                            <h3 id="averageScore2">Loading...</h3>
                         </div>
                     </div>
 
@@ -311,37 +356,37 @@
                     <div id="hoyeste-score2" class="tabcontent grid-item tekst">
                         <h2>Høyeste score:</h2>
                         <div class="box">
-                            <h3>310</h3>
+                            <h3 id="highScore2">Loading...</h3>
                         </div>
                     </div> 
                     <div id="hoyeste-score3" class="tabcontent grid-item tekst">
                         <h2>Høyeste score:</h2>
                         <div class="box">
-                            <h3>310</h3>
+                            <h3 id="highScore2">Loading...</h3>
                         </div>
                     </div> 
                     <div id="hoyeste-score4" class="tabcontent grid-item tekst">
                         <h2>Høyeste score:</h2>
                         <div class="box">
-                            <h3>310</h3>
+                            <h3 id="highScore2">Loading...</h3>
                         </div>
                     </div> 
                     <div id="hoyeste-score5" class="tabcontent grid-item tekst">
                         <h2>Høyeste score:</h2>
                         <div class="box">
-                            <h3>310</h3>
+                            <h3 id="highScore2">Loading...</h3>
                         </div>
                     </div> 
                     <div id="hoyeste-score6" class="tabcontent grid-item tekst">
                         <h2>Høyeste score:</h2>
                         <div class="box">
-                            <h3>310</h3>
+                            <h3 id="highScore2">Loading...</h3>
                         </div>
                     </div> 
                     <div id="hoyeste-score7" class="tabcontent grid-item tekst">
                         <h2>Høyeste score:</h2>
                         <div class="box">
-                            <h3>310</h3>
+                            <h3 id="highScore2">Loading...</h3>
                         </div>
                     </div>  
                 </div> 
@@ -370,128 +415,128 @@
                         </div>
                     </div>
                     <div id="nest_siste2" class="tabcontent grid-item tekst">
-                        <h2>10.04.2024:</h2>
+                        <h4>Forrige økt</h4>
                         <div class="box_uten grid-item-four">
                             <div class="tilt">
                                 <h3 class="tekst">Tilt:</h3>
-                                <h3>76</h3>
+                                <h3 id="prevTilt2">Loading...</h3>
                             </div>
                             <div class="tid">
                                 <h3 class="tekst">Tid:</h3>
-                                <h3>00:00</h3>
+                                <h3 id="prevTime2">Loading...</h3>
                             </div>
                             <div class="aksel">
                                 <h3 class="tekst">Akselerasjon:</h3>
-                                <h3>50</h3>
+                                <h3 id="prevAcc2">Loading...</h3>
                             </div>
                             <div class="score">
                                 <h3 class="tekst">Score:</h3>
-                                <h3>222</h3>
+                                <h3 id="prevScore2">Loading...</h3>
                             </div>
                         </div>
                     </div>
                     <div id="nest_siste3" class="tabcontent grid-item tekst">
-                        <h2>10.04.2024:</h2>
+                        <h4>Forrige økt</h4>
                         <div class="box_uten grid-item-four">
                             <div class="tilt">
                                 <h3 class="tekst">Tilt:</h3>
-                                <h3>76</h3>
+                                <h3 id="prevTilt2">Loading...</h3>
                             </div>
                             <div class="tid">
                                 <h3 class="tekst">Tid:</h3>
-                                <h3>00:00</h3>
+                                <h3 id="prevTime2">Loading...</h3>
                             </div>
                             <div class="aksel">
                                 <h3 class="tekst">Akselerasjon:</h3>
-                                <h3>50</h3>
+                                <h3 id="prevAcc2">Loading...</h3>
                             </div>
                             <div class="score">
                                 <h3 class="tekst">Score:</h3>
-                                <h3>222</h3>
+                                <h3 id="prevScore2">Loading...</h3>
                             </div>
                         </div>
                     </div>
                     <div id="nest_siste4" class="tabcontent grid-item tekst">
-                        <h2>10.04.2024:</h2>
+                        <h4>Forrige økt</h4>
                         <div class="box_uten grid-item-four">
                             <div class="tilt">
                                 <h3 class="tekst">Tilt:</h3>
-                                <h3>76</h3>
+                                <h3 id="prevTilt2">Loading...</h3>
                             </div>
                             <div class="tid">
                                 <h3 class="tekst">Tid:</h3>
-                                <h3>00:00</h3>
+                                <h3 id="prevTime2">Loading...</h3>
                             </div>
                             <div class="aksel">
                                 <h3 class="tekst">Akselerasjon:</h3>
-                                <h3>50</h3>
+                                <h3 id="prevAcc2">Loading...</h3>
                             </div>
                             <div class="score">
                                 <h3 class="tekst">Score:</h3>
-                                <h3>222</h3>
+                                <h3 id="prevScore2">Loading...</h3>
                             </div>
                         </div>
                     </div>
                     <div id="nest_siste5" class="tabcontent grid-item tekst">
-                        <h2>10.04.2024:</h2>
+                        <h4>Forrige økt</h4>
                         <div class="box_uten grid-item-four">
                             <div class="tilt">
                                 <h3 class="tekst">Tilt:</h3>
-                                <h3>76</h3>
+                                <h3 id="prevTilt2">Loading...</h3>
                             </div>
                             <div class="tid">
                                 <h3 class="tekst">Tid:</h3>
-                                <h3>00:00</h3>
+                                <h3 id="prevTime2">Loading...</h3>
                             </div>
                             <div class="aksel">
                                 <h3 class="tekst">Akselerasjon:</h3>
-                                <h3>50</h3>
+                                <h3 id="prevAcc2">Loading...</h3>
                             </div>
                             <div class="score">
                                 <h3 class="tekst">Score:</h3>
-                                <h3>222</h3>
+                                <h3 id="prevScore2">Loading...</h3>
                             </div>
                         </div>
                     </div>
                     <div id="nest_siste6" class="tabcontent grid-item tekst">
-                        <h2>10.04.2024:</h2>
+                        <h4>Forrige økt</h4>
                         <div class="box_uten grid-item-four">
                             <div class="tilt">
                                 <h3 class="tekst">Tilt:</h3>
-                                <h3>76</h3>
+                                <h3 id="prevTilt2">Loading...</h3>
                             </div>
                             <div class="tid">
                                 <h3 class="tekst">Tid:</h3>
-                                <h3>00:00</h3>
+                                <h3 id="prevTime2">Loading...</h3>
                             </div>
                             <div class="aksel">
                                 <h3 class="tekst">Akselerasjon:</h3>
-                                <h3>50</h3>
+                                <h3 id="prevAcc2">Loading...</h3>
                             </div>
                             <div class="score">
                                 <h3 class="tekst">Score:</h3>
-                                <h3>222</h3>
+                                <h3 id="prevScore2">Loading...</h3>
                             </div>
                         </div>
                     </div>
                     <div id="nest_siste7" class="tabcontent grid-item tekst">
-                        <h2>10.04.2024:</h2>
+                        <h4>Forrige økt</h4>
                         <div class="box_uten grid-item-four">
                             <div class="tilt">
                                 <h3 class="tekst">Tilt:</h3>
-                                <h3>76</h3>
+                                <h3 id="prevTilt2">Loading...</h3>
                             </div>
                             <div class="tid">
                                 <h3 class="tekst">Tid:</h3>
-                                <h3>00:00</h3>
+                                <h3 id="prevTime2">Loading...</h3>
                             </div>
                             <div class="aksel">
                                 <h3 class="tekst">Akselerasjon:</h3>
-                                <h3>50</h3>
+                                <h3 id="prevAcc2">Loading...</h3>
                             </div>
                             <div class="score">
                                 <h3 class="tekst">Score:</h3>
-                                <h3>222</h3>
+                                <h3 id="prevScore2">Loading...</h3>
                             </div>
                         </div>
                     </div>

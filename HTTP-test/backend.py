@@ -47,6 +47,10 @@ def behandler():
 def graf_behandler(): 
     return render_template('grafBehandler.html')
 
+@app.route('/test.html')
+def testGraf():
+    return render_template('test.html')
+
 # Generatorer
 @app.route('/api/hello', methods=['POST'])
 def hello():
@@ -65,15 +69,33 @@ def init():
     tilt_angle = [random.randint(-100,100)]
     graph_number = [random.randint(0,100)]
     # Append new data to the existing data
-    data['numbers'].extend(graph_number)
-    data['tilt_angles'].extend(tilt_angle)
+    # data['numbers'].extend(graph_number)
+    # data['tilt_angles'].extend(tilt_angle)
     save_data(data)
-    return jsonify(data)
+    return jsonify({
+        'numbers': graph_number,
+        'tilt': tilt_angle,
+    })
 
 @app.route('/api/newbutton2', methods=['GET'])
 def send_data():
     data = load_data()
     return jsonify(data)
+
+@app.route('/api/newbutton3', methods=['GET'])
+def graphs():
+    numbers2 = [random.randint(0, 100) for _ in range(10)]
+    tilt2 = [random.randint(-100, 100) for _ in range(10)]
+    time2 = [random.randint(0, 100) for _ in range(10)]
+    acc2 = [random.randint(0, 100) for _ in range(10)]
+
+    return jsonify({
+        'numbers': numbers2,
+        'tilt': tilt2,
+        'time': time2,
+        'acc': acc2
+    })
+
 
 if __name__ == '__main__':
     app.run(debug=True)
