@@ -8,9 +8,11 @@ import asyncio
 import random
 import json
 import time
+from datetime import datetime
+import copy
 from enum import Enum
 
-debug = True # Set to True to enable debug messages
+debug = False # Set to True to enable debug messages
 session_id = random.randint(0, 10000) # Random session ID. Used so that clients don't keep their ID across sessions. Oops has a chance of 1/10000 to fail
 
 def format_command_message(command, flag = -1, value = -1): # Format: JSON
@@ -63,8 +65,9 @@ class connection_handler:
     #Private methods. These are not meant to be called from outside the class.
 
     async def _read_from_client(self, client):
-        data = await client.reader.read(1024)  # Adjust buffer size if needed
-        if not data:  # Client has disconnected
+        try:
+            data = await asyncio.wait_for(client.reader.read(1024), 1.5)# Adjust buffer size if needed
+        except: # Client has disconnected
             print("\nClient disconnected: ")
             print(client.writer.get_extra_info('peername'))
             return ClientReturnCodes.CLIENT_DISCONNECTED
@@ -77,6 +80,7 @@ class connection_handler:
     async def _save_data(self, my_id, message): # Saves to client object, NOT database!
         try:
             message_json = json.loads(message)
+            self._clients["client_" + str(my_id)].readings["timestamp"].append(time.time())
             for key in message_json: # Todo add another for loop in case of multiple transmissions in buffer
                 if debug: print(f"Key: {key}, Value: {message_json[key]}")
                 self._clients["client_" + str(my_id)].readings[key].append(message_json[key])
@@ -196,7 +200,7 @@ class connection_handler:
         if debug: print("Started")
         while True:
             if await self._read_from_client(self._clients["client_" + str(my_id)]) == ClientReturnCodes.CLIENT_DISCONNECTED:
-                self._dropped_clients.append(my_id)
+                self._dropped_clients.append("client_" + str(my_id))
                 break
 
         # Past here: Client has disconnected
@@ -217,9 +221,13 @@ class connection_handler:
     async def send_to_client(self, client_id, message): # client_id must be a string with the following format: "client_(int)"
         if client_id in self._clients:
             if debug: print(f"Sending message to client {client_id}: {message}")
-            self._clients[client_id].writer.write(message.encode()) # Warning: currently contains no writer error handling
-            await self._clients[client_id].writer.drain()
-            return ClientReturnCodes.READ_WRITE_SUCCESS
+            try:
+                self._clients[client_id].writer.write(message.encode()) # Warning: currently contains no writer error handling
+                await self._clients[client_id].writer.drain()
+                return ClientReturnCodes.READ_WRITE_SUCCESS
+            except:
+               print("HANDLER ERROR: probably disconnected, client ID: " + client_id)
+            return ClientReturnCodes.ERR_INVALID_CLIENT_ID 
         else:
             print("ERROR: Tried to send message to an invalid client ID: " + client_id)
             return ClientReturnCodes.ERR_INVALID_CLIENT_ID
@@ -228,21 +236,43 @@ class connection_handler:
         return await self.send_to_client(client_id, format_command_message(command, flag, value))
 
     async def get_IDs(self):
-        return self._clients.keys()
+        #keys = copy.deepcopy(self._clients.keys())
+        keys = self._clients.keys()
+        client_ids = []
+        for key in keys :
+            if key not in self._dropped_clients:
+                client_ids.append(copy.deepcopy(key))
+            
+        print(client_ids)
+        return client_ids
     
     async def get_connected(self, client_id):
         return client_id not in self._dropped_clients
     
     async def get_last_reading(self, client_id):
-        reading = {
-            "timestamp": self._clients[client_id].readings["timestamp"][-1],
-            "accel_x": self._clients[client_id].readings["accel_x"][-1],
-            "accel_y": self._clients[client_id].readings["accel_y"][-1],
-            "accel_z": self._clients[client_id].readings["accel_z"][-1],
-            "gyro_x": self._clients[client_id].readings["gyro_x"][-1],
-            "gyro_y": self._clients[client_id].readings["gyro_y"][-1],
-            "gyro_z": self._clients[client_id].readings["gyro_z"][-1]
-        }
+        print("Trying to access " + client_id)
+        print(self._clients.keys())
+        try:
+            reading = {
+                "timestamp": self._clients[client_id].readings["timestamp"][-1],
+                "accel_x": self._clients[client_id].readings["accel_x"][-1],
+                "accel_y": self._clients[client_id].readings["accel_y"][-1],
+                "accel_z": self._clients[client_id].readings["accel_z"][-1],
+                "gyro_x": self._clients[client_id].readings["gyro_x"][-1],
+                "gyro_y": self._clients[client_id].readings["gyro_y"][-1],
+                "gyro_z": self._clients[client_id].readings["gyro_z"][-1]
+            }
+        except Exception as errormessage:
+            print(errormessage)
+            reading = {
+                "timestamp": -1,
+                "accel_x": -1,
+                "accel_y": -1,
+                "accel_z": -1,
+                "gyro_x": -1,
+                "gyro_y": -1,
+                "gyro_z": -1
+            }
         return reading
 
     async def get_all_readings(self, client_id):
@@ -254,6 +284,12 @@ class connection_handler:
         else:
             print("Invalid gameplay state: " + state)
     
+    async def get_client_dropped(self, client_id):
+        if client_id in self._dropped_clients:
+            print("Client dropped!")
+            return True
+        else:
+            return False
     #
     
     #Simulation routine for debugging

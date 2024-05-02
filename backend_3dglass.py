@@ -5,7 +5,9 @@ import time
 import socket
 from math import sqrt
 import asyncio
+import threading
 
+    
 
 # Create a UDP socket i website1
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -32,7 +34,7 @@ client_socket2.settimeout(20)
 
 game_start = 0
 
-data_file = 'data.json'
+data_file = 'pasient1.json'
 
 def load_data():
     try:
@@ -45,15 +47,6 @@ def save_data(data):
     with open(data_file, 'w') as file:
         json.dump(data, file) 
 
-def flush_socket(sock):
-    try:
-        while True:
-            data = sock.recv(1024)
-            if not data:
-                break
-    except BlockingIOError:
-        pass
-
 def website():
     global client_socket
     print("started backend")
@@ -61,11 +54,7 @@ def website():
     @app.route('/')
     def index():
         return render_template('forside.html')
-    
-    @app.route('/forside.html')
-    def forside():
-        return render_template('forside.html')
-    
+
     @app.route('/glass.html')
     def glass_view():
         return render_template('glass.html')
@@ -104,46 +93,20 @@ def website():
     @app.route('/api/newbutton', methods=['GET'])
     def init():
     #    try:
-        #flush_socket(client_socket)
-        try:
-            a, adress = client_socket.recvfrom(1024)
-            a = a.decode("utf-8")
-            a = a.split(' ')
-            print(a)
-            #tilt = str(sqrt((float((a[0]))/100)**2+(float((a[2]))/100)**2))
-            graph = a[8]
-            #tilt_angle = tilt
-            if int(a[7]) != 1:
-                print("returning 0 to numbers")
-                return jsonify({
-                    "tiltAngleX": float(a[0])/100,
-                    "tiltAngleY": float(a[1])/100,
-                    "tiltAngleZ": float(a[2])/100,
-                    "numbers": 0
-                })
-            else:
-                print("returning graph to numbers")
-                return jsonify({
-                    "tiltAngleX": float(a[0])/100,
-                    "tiltAngleY": float(a[1])/100,
-                    "tiltAngleZ": float(a[2])/100,
-                    "numbers": float(graph)
-                })
-        except Exception as errormessage:
-            print(errormessage) 
-        
-    '''
-        except Exception as errormessage:
-            print(errormessage)
-            print("returning nothing")
-            return jsonify({
-                    "tiltAngleX": 0,
-                    "tiltAngleY": 0,
-                    "tiltAngleZ": 0,
-                    "numbers": 0
-                })
-        
-    '''
+        a, adress = client_socket.recvfrom(1024)
+        a = a.decode("utf-8")
+        a = a.split(' ')
+        print(a)
+        #tilt = str(sqrt((float((a[0]))/100)**2+(float((a[2]))/100)**2))
+        graph = str(sqrt(float(a[3])**2 + float(a[4])**2 + float(a[5])**2))
+        #tilt_angle = tilt
+        graph_number = graph
+        return jsonify({
+            "tiltAngleX": float(a[0])/100,
+            "tiltAngleY": float(a[1])/100,
+            "tiltAngleZ": float(a[2])/100
+        })
+    #    except: 
     #        print("Harm done") 
     #        return ""
 
@@ -160,24 +123,9 @@ def website():
             time.sleep(1)
         return "Button clicked"
 
-    @app.route('/api/newbutton2', methods=['GET'])
-    def data():
-        numbers = [random.randint(0,100) for _ in range(10)]
-        tilt_angles = [random.randint(-100,100) for _ in range(10)]
-        time = [random.randint(0,100) for _ in range(10)]
-        acceleration = [random.randint(0,100) for _ in range(10)]
-        return jsonify({
-            "numbers": numbers,
-            "tilt_angles": tilt_angles,
-            "time": time,
-            "acceleration": acceleration
-        })
-
     if __name__ == '__main__':
         app.run(debug=False, host="10.42.0.1", port="5000")
         #app.run(debug=True, host=address[0], port=address[1])
-
-    
 '''
 def website2(address):
     app = Flask(__name__)
@@ -236,4 +184,5 @@ if __name__ == '__main__':
     website2(('127.0.0.1', 8009))
 
 '''
+#threading.Thread(target=website, daemon=True).start()
 website()

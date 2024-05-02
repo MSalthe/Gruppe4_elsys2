@@ -32,7 +32,7 @@
                 .then(response => response.json())
                 .then(data => {
                     // Modulerer tiltet til glasset basert på dataen mottatt
-                    tiltGlass(data.tilt);
+                    tiltGlass(data.tiltAngleX, data.tiltAngleY, data.tiltAngleZ);
                 })
                 .catch(error => {
                     console.error('Feil ved HTTP-forespørsel:', error);
@@ -40,10 +40,10 @@
         }
 
         // Funksjon for å modulere tiltet til glasset
-        function tiltGlass(tiltAngle) {
+        function tiltGlass(tiltAngleX, tiltAngleY, tiltAngleZ) {
             // Her kan du implementere logikk for å modulere tiltet til glasset basert på dataen mottatt
             const glass = document.getElementById('glass');
-            glass.style.transform = `translate(-50%, -50%) rotate(${tiltAngle}deg)`;
+            glass.style.transform = `rotateX(${tiltAngleX}deg) rotateY(${tiltAngleZ}deg)`;
         }
 
         // // Gjør en HTTP-forespørsel intervallvis
@@ -51,6 +51,8 @@
 
         // Call this function when the page loads
         // window.onload = makeHttpRequest;
+        
+        
     </script>
 
 </body>

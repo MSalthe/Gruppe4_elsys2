@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive 3D Object with Three.js</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="/static/js/three.min.js"></script>
+    <script>
+        let scene, camera, renderer, cylinder;
+        let targetRotation = { x: 0, y: 0, z: 0 };
+        let currentRotation = { x: 0, y: 0, z: 0 };
+        const maxRotation = Math.PI / 4;
+        const rotationSpeed = 0.05;  // Control the speed of the interpolation
+        const pollInterval = 50;
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+
+            renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.body.appendChild(renderer.domElement);
+
+            const geometry = new THREE.CylinderGeometry(1, 1, 2.5, 32);
+            const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+            cylinder = new THREE.Mesh(geometry, material);
+            scene.add(cylinder);
+            camera.position.z = 5;
+
+            animate();
+            setInterval(fetchRotationData, pollInterval); // Setup the interval for polling
+        }
+
+        function fetchRotationData() {
+            fetch('/api/newbutton')
+                .then(response => response.json())
+                .then(data => {
+                    targetRotation.x = data.tiltAngleX/100;
+                    targetRotation.y = data.tiltAngleY/100;
+                    targetRotation.z = data.tiltAngleZ/100;
+                    
+                    // DEBUG!
+                    console.log(targetRotation.x, targetRotation.y, targetRotation.z);
+                })
+                .catch(error => console.error('Error fetching rotation data:', error));
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Interpolate the current rotation towards the target rotation
+            currentRotation.x = THREE.MathUtils.lerp(currentRotation.x, targetRotation.x * maxRotation, rotationSpeed);
+            currentRotation.y = THREE.MathUtils.lerp(currentRotation.y, targetRotation.y * maxRotation, rotationSpeed);
+            currentRotation.z = THREE.MathUtils.lerp(currentRotation.z, targetRotation.z * maxRotation, rotationSpeed);
+
+            // Apply the interpolated rotation
+            cylinder.rotation.x = currentRotation.x;
+            cylinder.rotation.y = currentRotation.y;
+            cylinder.rotation.z = currentRotation.z;
+
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        init();
+    </script>
+</body>
+</html>

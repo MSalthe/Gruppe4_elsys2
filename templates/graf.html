@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Graph Display</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/static/js/chart.js"></script>
 </head>
 <body>
-    <canvas id="dataChart" width="800" height="800"></canvas>
+    <canvas id="dataChart"></canvas>
     <p id="data"></p>
 
     <script>
@@ -16,11 +16,7 @@
             fetch('/api/newbutton')
                 .then(response => response.json())
                 .then(data => {
-                    if (dataChart) {
-                        updateGraph(data.number);
-                    } else {
-                        drawGraph(data.number);
-                    }
+                    updateGraph(data.tiltAngleX);
                 })
                 .catch(error => {
                     console.error('Error during HTTP request:', error);
@@ -45,7 +41,9 @@
                             title: {
                                 display: true,
                                 text: 'Attempts',
-                                font: {size: 16},
+                                font: {
+                                    size: 16
+                                },
                                 color: '#666'
                             }
                         },
@@ -53,7 +51,9 @@
                             title: {
                                 display: true,
                                 text: 'Score',
-                                font: {size: 16},
+                                font: {
+                                    size: 16
+                                },
                                 color: '#666'
                             },
                             beginAtZero: true,
@@ -76,7 +76,7 @@
             dataChart.update();
         }
 
-        setInterval(makeHttpRequest, 20); // Poll every 20 milliseconds
+        setInterval(makeHttpRequest, 5000); // Poll every 3 seconds
         
     </script>
 
